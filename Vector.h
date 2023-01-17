@@ -79,7 +79,7 @@ namespace MySTL {
             return this->data[index];
         }
         else {
-            throw std::out_of_range();
+            throw std::out_of_range("Out of Range!");
         }
     }
 
@@ -131,10 +131,10 @@ namespace MySTL {
     {
         try {
             this->data = new T[l.size() + 128];
-            this->elements_num = l.size();
+            this->elements_num = 0;
             this->capacity = l.size() + 128;
-            for (int i = 0; i < l.size(); i++) {
-                this->data[i] = l[i];
+            for (auto it = l.begin(); it != l.end(); it++) {
+                this->push_back(*it);
             }
         }
         catch (std::bad_alloc& e) {
@@ -220,7 +220,7 @@ namespace MySTL {
             this->resize();
         }
         else {
-            throw std::out_of_range();
+            throw std::out_of_range("Out of Range!");
         }
       
     }
