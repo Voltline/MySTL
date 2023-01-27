@@ -3,6 +3,7 @@
 #include <exception>
 #include <stdexcept>
 #include <iostream>
+#include "exceptions.h"
 
 using size_t = unsigned long long;
 
@@ -34,7 +35,7 @@ namespace MySTL {
         void push_back(T elem);
         void pop_back();
         void clear();
-        void erase(T* pos_beginm, T* pos_end);
+        void erase(T* pos_begin, T* pos_end);
         
         void insert(T* pos, T value);
         void insert(T* pos, size_t ins_elem_num, T value);
@@ -61,7 +62,7 @@ namespace MySTL {
         if (this->elements_num == this->capacity) {
             try {
                 T* temp = new T[this->capacity + 128];
-                memcpy(temp, this->data, this->elements_num);
+                memcpy(temp, this->data, this->elements_num * sizeof(T));
                 delete[] this->data;
                 this->data = temp;
                 temp = nullptr;
@@ -168,6 +169,41 @@ namespace MySTL {
     }
 
     template<typename T>
+    inline void Vector<T>::resize(size_t new_elem_num)
+    {
+        if (new_elem_num <= this->capacity) {
+            this->elements_num = new_elem_num;
+        }
+        else {
+            this->reserve(new_elem_num + 128);
+            this->elements_num = new_elem_num;
+        }
+        this->resize();
+    }
+
+    template<typename T>
+    inline void Vector<T>::resize(size_t new_elem_num, T value)
+    {
+        if (new_elem_num <= this->capacity) {
+            if (new_elem_num <= this->elements_num) {
+                this->elements_num = new_elem_num;
+            }
+            else {
+                for (; this->elements_num < new_elem_num; this->elements_num++) {
+                    this->data[this->elements_num] = value;
+                }
+            }
+        }
+        else {
+            this->reserve(new_elem_num + 128);
+            for (; this->elements_num < new_elem_num; this->elements_num++) {
+                this->data[this->elements_num] = value;
+            }
+        }
+        this->resize();
+    }
+
+    template<typename T>
     bool Vector<T>::empty() 
     {
         if (this->elements_num == 0) return true;
@@ -200,16 +236,38 @@ namespace MySTL {
         }
         return output;
     }
+
+    template<typename T>
+    inline void Vector<T>::reserve(size_t new_size)
+    {
+        if (new_size != this->capacity) {
+            try {
+                T* temp = new T[new_size];
+                size_t min_size{ (new_size > this->elements_num) ? this->elements_num : new_size };
+                memcpy(temp, this->data, min_size * sizeof(T));
+                delete[] this->data;
+                this->data = temp;
+                temp = nullptr;
+                this->capacity = new_size;
+            }
+            catch (std::bad_alloc& e) {
+                throw e;
+            }
+        }
+    }
+
     template<typename T>
     inline T* Vector<T>::begin()
     {
         return this->data;
     }
+
     template<typename T>
     inline T* Vector<T>::end()
     {
         return this->data + this->elements_num;
     }
+
     template<typename T>
     inline void Vector<T>::push_back(T elem)
     {
@@ -222,16 +280,38 @@ namespace MySTL {
         else {
             throw std::out_of_range("Out of Range!");
         }
-      
     }
+
     template<typename T>
     inline void Vector<T>::pop_back()
     {
         this->elements_num--;
     }
+
     template<typename T>
     inline void Vector<T>::clear()
     {
         this->elements_num = 0;
+    }
+
+    template<typename T>
+    inline void Vector<T>::erase(T* pos_begin, T* pos_end)
+    {
+        if (pos_begin <= pos_end) {
+            if (pos_begin >= this->begin() && pos_begin <= this->end()) {
+                if (this->end() < pos_end) {
+                    pos_end = this->end();
+                }
+                memcpy(pos_begin, pos_end, (this->end() - pos_end) * sizeof(T));
+                this->elements_num -= pos_end - pos_begin;
+            }
+            else {
+                throw IteratorErrorException{};
+            }
+        }
+        else {
+            throw IteratorErrorException{};
+        }
+
     }
 }
