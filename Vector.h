@@ -13,7 +13,7 @@ namespace MySTL {
     {
     private:
         T* data;
-        size_t capacity{};
+        size_t capacity_num{};
         size_t elements_num{};
         void resize();
     public:
@@ -42,12 +42,13 @@ namespace MySTL {
         void insert(T* pos, T* other_pos_begin, T* other_pos_end);
 
         bool empty();
-        size_t capacity_num();
-        size_t elem_num();
+        size_t capacity();
+        size_t size();
         T* get_data();
 
         T& operator[](size_t index);
-        bool operator==(Vector vec);
+        bool operator==(const Vector<T>& vec);
+        bool operator!=(const Vector<T>& vec);
 
         template<typename U>
         friend std::ostream& operator<<(std::ostream& output, Vector<U> vec);
@@ -59,9 +60,9 @@ namespace MySTL {
         /* The mode of vector resize:
          * if v.elements_num == capacity, new capacity = capacity + 128;
          */
-        if (this->elements_num == this->capacity) {
+        if (this->elements_num == this->capacity()) {
             try {
-                T* temp = new T[this->capacity + 128];
+                T* temp = new T[this->capacity() + 128];
                 memcpy(temp, this->data, this->elements_num * sizeof(T));
                 delete[] this->data;
                 this->data = temp;
@@ -74,9 +75,31 @@ namespace MySTL {
     }
 
     template<typename T>
+    bool operator==(const Vector<T>& _Left, const Vector<T>& _Right) 
+    {
+        if (_Left.size() != _Right.size()) {
+            return false;
+        }
+        else {
+            for (size_t i = 0; i < _Left.size(); i++) {
+                if (_Left[i] != _Right[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    template<typename T>
+    bool operator!=(const Vector<T>& _Left, const Vector<T>& _Right)
+    {
+        return !(_Left == _Right);
+    }
+
+    template<typename T>
     T& Vector<T>::operator[](size_t index) 
     {
-        if (index < this->elements_num) {
+        if (index < this->size()) {
             return this->data[index];
         }
         else {
@@ -85,10 +108,22 @@ namespace MySTL {
     }
 
     template<typename T>
+    inline bool Vector<T>::operator==(const Vector<T>& vec)
+    {
+        return (*this == vec);
+    }
+
+    template<typename T>
+    inline bool Vector<T>::operator!=(const Vector<T>& vec)
+    {
+        return !(*this == vec);
+    }
+
+    template<typename T>
     Vector<T>::Vector() 
     {
         this->data = new T[128];
-        this->capacity = 128;
+        this->capacity_num = 128;
         this->elements_num = 0;
     }
 
@@ -97,12 +132,12 @@ namespace MySTL {
     {
         try {
             this->data = new T[n];
-            this->capacity = n;
+            this->capacity_num = n;
             this->elements_num = 0;
         }
         catch (std::bad_alloc& e) {
             this->data = new T[128];
-            this->capacity = 128;
+            this->capacity_num = 128;
             this->elements_num = 0;
         }
     }
@@ -111,7 +146,7 @@ namespace MySTL {
     Vector<T>::Vector(T* arr, int n) 
     {
         this->data = arr;
-        this->capacity = n;
+        this->capacity_num = n;
         this->elements_num = n;
         this->resize();
     }
@@ -120,8 +155,8 @@ namespace MySTL {
     Vector<T>::Vector(Vector<T>&& vec) noexcept 
     {
         this->data = vec.get_data();
-        this->capacity = vec.capacity_num();
-        this->elements_num = vec.elem_num();
+        this->capacity_num = vec.capacity();
+        this->elements_num = vec.size();
         this->resize();
 
         vec.~Vector();
@@ -133,7 +168,7 @@ namespace MySTL {
         try {
             this->data = new T[l.size() + 128];
             this->elements_num = 0;
-            this->capacity = l.size() + 128;
+            this->capacity_num = l.size() + 128;
             for (auto it = l.begin(); it != l.end(); it++) {
                 this->push_back(*it);
             }
@@ -146,11 +181,11 @@ namespace MySTL {
     template<typename T>
     Vector<T>::Vector(Vector<T>& sec) 
     {
-        this->capacity = sec.capacity_num();
-        this->elements_num = sec.elem_num();
+        this->capacity_num = sec.capacity();
+        this->elements_num = sec.size();
         try {
-            this->data = new T[this->capacity];
-            for (int i = 0; i < this->elements_num; i++) {
+            this->data = new T[this->capacity()];
+            for (int i = 0; i < this->size(); i++) {
                 this->data[i] = sec[i];
             }
         }
@@ -164,14 +199,14 @@ namespace MySTL {
     {
         delete[] this->data;
         this->data = nullptr;
-        this->capacity = 0;
+        this->capacity_num = 0;
         this->elements_num = 0;
     }
 
     template<typename T>
     inline void Vector<T>::resize(size_t new_elem_num)
     {
-        if (new_elem_num <= this->capacity) {
+        if (new_elem_num <= this->capacity()) {
             this->elements_num = new_elem_num;
         }
         else {
@@ -184,7 +219,7 @@ namespace MySTL {
     template<typename T>
     inline void Vector<T>::resize(size_t new_elem_num, T value)
     {
-        if (new_elem_num <= this->capacity) {
+        if (new_elem_num <= this->capacity()) {
             if (new_elem_num <= this->elements_num) {
                 this->elements_num = new_elem_num;
             }
@@ -204,26 +239,26 @@ namespace MySTL {
     }
 
     template<typename T>
-    bool Vector<T>::empty() 
+    inline bool Vector<T>::empty() 
     {
         if (this->elements_num == 0) return true;
         else return false;
     }
 
     template<typename T>
-    size_t Vector<T>::capacity_num()
+    inline size_t Vector<T>::capacity()
     {
-        return this->capacity;
+        return this->capacity_num;
     }
 
     template<typename T>
-    size_t Vector<T>::elem_num() 
+    inline size_t Vector<T>::size()
     {
         return this->elements_num;
     }
 
     template<typename T>
-    T* Vector<T>::get_data()
+    inline T* Vector<T>::get_data()
     {
         return this->data;
     }
@@ -231,7 +266,7 @@ namespace MySTL {
     template<typename U>
     std::ostream& operator<<(std::ostream& output, Vector<U> vec) 
     {
-        for (int i = 0; i < vec.elem_num(); i++) {
+        for (int i = 0; i < vec.size(); i++) {
             output << vec[i] << " ";
         }
         return output;
@@ -240,7 +275,7 @@ namespace MySTL {
     template<typename T>
     inline void Vector<T>::reserve(size_t new_size)
     {
-        if (new_size != this->capacity) {
+        if (new_size != this->capacity()) {
             try {
                 T* temp = new T[new_size];
                 size_t min_size{ (new_size > this->elements_num) ? this->elements_num : new_size };
@@ -248,7 +283,7 @@ namespace MySTL {
                 delete[] this->data;
                 this->data = temp;
                 temp = nullptr;
-                this->capacity = new_size;
+                this->capacity_num = new_size;
             }
             catch (std::bad_alloc& e) {
                 throw e;
@@ -272,7 +307,7 @@ namespace MySTL {
     inline void Vector<T>::push_back(T elem)
     {
         this->resize();
-        if (this->elements_num < this->capacity) {
+        if (this->elements_num < this->capacity()) {
             this->data[this->elements_num] = elem;
             this->elements_num++;
             this->resize();
@@ -312,6 +347,26 @@ namespace MySTL {
         else {
             throw IteratorErrorException{};
         }
+    }
 
+    template<typename T>
+    inline void Vector<T>::insert(T* pos, T value)
+    {
+        if (pos >= this->begin() && pos <= this->end()) {
+            size_t elem_after_insert_num = this->end() - pos;
+            if (this->capacity() - this->elements_num >= 1) {
+                memcpy(pos + 1, pos, elem_after_insert_num * sizeof(T));
+                *pos = value;
+            }
+            else {
+                this->reserve(this->capacity() + 1);
+                memcpy(pos + 1, pos, elem_after_insert_num * sizeof(T));
+                *pos = value;
+            }
+            this->elements_num++;
+        }
+        else {
+            throw IteratorOutOfRangeException{};
+        }
     }
 }

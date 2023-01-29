@@ -16,3 +16,11 @@ class IteratorErrorException : public std::exception
 		return "IteratorError";
 	}
 };
+
+class IteratorOutOfRangeException : public std::exception
+{
+	const char* what() const throw ()
+	{
+		return "IteratorOutOfRange";
+	}
+};
