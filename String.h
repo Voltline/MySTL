@@ -2,10 +2,14 @@
 #include <iostream>
 #include "Vector.h"
 
-class String
+namespace MySTL 
 {
-private:
-	MySTL::Vector<char> container{};
-	size_t char_size;
-};
+	class String
+	{
+	private:
+		Vector<char> container{};
+		size_t char_size{ 0 };
+	};
+}
+
 
