@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "Array.h"
+#include "../includes/Array.h"
 
 namespace ArrayTest
 {
