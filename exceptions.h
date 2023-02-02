@@ -9,6 +9,14 @@ class LengthErrorException : public std::exception
 	}
 };
 
+class OutOfRangeException : public std::exception
+{
+	const char* what() const throw ()
+	{
+		return "Out of Range Error";
+	}
+};
+
 class IteratorErrorException : public std::exception
 {
 	const char* what() const throw ()

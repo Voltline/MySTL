@@ -8,5 +8,8 @@ namespace MySTL
 	{
 	private:
 		Vector<T> _data{};
+	public:
+		Stack() = default;
+		Stack()
 	};
 }

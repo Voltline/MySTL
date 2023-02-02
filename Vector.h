@@ -5,8 +5,6 @@
 #include <iostream>
 #include "exceptions.h"
 
-using size_t = unsigned long long;
-
 namespace MySTL {
     template<typename T>
     class Vector
@@ -68,7 +66,7 @@ namespace MySTL {
         if (this->elements_num == this->capacity()) {
             try {
                 T* temp = new T[this->capacity() + 128];
-                memcpy(temp, this->_data, this->elements_num * sizeof(T));
+                memmove(temp, this->_data, this->elements_num * sizeof(T));
                 delete[] this->_data;
                 this->_data = temp;
                 this->capacity_num = this->capacity() + 128;
@@ -311,7 +309,7 @@ namespace MySTL {
             try {
                 T* temp = new T[new_capacity];
                 size_t min_capacity{ (new_capacity > this->elements_num) ? this->elements_num : new_capacity };
-                memcpy(temp, this->_data, min_capacity * sizeof(T));
+                memmove(temp, this->_data, min_capacity * sizeof(T));
                 delete[] this->_data;
                 this->_data = temp;
                 temp = nullptr;
@@ -373,7 +371,7 @@ namespace MySTL {
                 if (this->end() < pos_end) {
                     pos_end = this->end();
                 }
-                memcpy(pos_begin, pos_end, (this->end() - pos_end) * sizeof(T));
+                memmove(pos_begin, pos_end, (this->end() - pos_end) * sizeof(T));
                 this->elements_num -= pos_end - pos_begin;
             }
             else {
@@ -392,13 +390,13 @@ namespace MySTL {
             size_t ins_pos_index = pos - this->begin();
             size_t elem_after_insert_num = this->end() - pos;
             if (this->capacity() - this->elements_num >= 1) {
-                memcpy(pos + 1, pos, elem_after_insert_num * sizeof(T));
+                memmove(pos + 1, pos, elem_after_insert_num * sizeof(T));
                 *pos = value;
             }
             else {
                 this->reserve(this->capacity() + 1);
                 pos = this->begin() + ins_pos_index;
-                memcpy(pos + 1, pos, elem_after_insert_num * sizeof(T));
+                memmove(pos + 1, pos, elem_after_insert_num * sizeof(T));
                 *pos = value;
             }
             this->elements_num++;
@@ -418,7 +416,7 @@ namespace MySTL {
                 this->reserve(ins_elem_num + this->size() + 128);
                 pos = this->begin() + ins_pos_index;
             }
-            memcpy(pos + ins_elem_num, pos, copy_num * sizeof(T));
+            memmove(pos + ins_elem_num, pos, copy_num * sizeof(T));
             size_t index = pos - this->begin();
             for (size_t i = 0; i < ins_elem_num; i++) {
                 this->_data[index + i] = value;
@@ -441,7 +439,7 @@ namespace MySTL {
                 this->reserve(ins_elem_num + this->size() + 128);
                 pos = this->begin() + ins_pos_index;
             }
-            memcpy(pos + ins_elem_num, pos, copy_num * sizeof(T));
+            memmove(pos + ins_elem_num, pos, copy_num * sizeof(T));
             size_t index = pos - this->begin();
             for (size_t i = 0; i < ins_elem_num; i++) {
                 this->_data[index + i] = *(other_pos_begin + i);
