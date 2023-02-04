@@ -10,7 +10,6 @@ namespace MySTL
 	private:
 		Vector<unsigned char> container;
 		size_t _size{ 0 };
-		static const size_t npos;
 	public:
 		using iterator = unsigned char*;
 	public:
@@ -89,12 +88,17 @@ namespace MySTL
 			return output;
 		}
 
-		friend std::istream& operator>>(std::istream& input, String _str)
+		friend std::istream& operator>>(std::istream& input, String& _str)
 		{
-
+			_str.clear();
+			unsigned char c = input.get();
+			while (c != ' ' && c != '\n' && c != '\t') {
+				_str.push_back(c);
+				c = input.get();
+			}
+			return input;
 		}
 	};
-	const size_t String::npos = -1;
 
 	constexpr bool operator==(const char* _Left, String _Right);
 	constexpr bool operator!=(const char* _Left, String _Right);

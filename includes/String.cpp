@@ -176,7 +176,13 @@ namespace MySTL
 
 	void String::push_back(char c)
 	{
-		this->container[this->_size++] = c;
-		this->container[this->_size] = '\0';
+		if (this->_size == 0) {
+			this->container.push_back(c);
+		}
+		else {
+			this->container[_size] = c;
+		}
+		this->container.push_back('\0');
+		this->_size++;
 	}
 }
