@@ -19,6 +19,7 @@ namespace MySTL {
     public:
         Vector();
         Vector(T* arr, size_t n);
+        Vector(T* _begin, T* _end);
         Vector(size_t _elem_num, T value);
         Vector(size_t n);
         Vector(Vector<T>&& vec) noexcept;
@@ -51,6 +52,8 @@ namespace MySTL {
         constexpr void swap(Vector<T>& _Right);
 
         T& operator[](size_t index);
+        constexpr void operator=(const Vector<T>& vec);
+        constexpr void operator=(Vector<T>&& vec) noexcept;
         bool operator==(const Vector<T>& vec);
         bool operator!=(const Vector<T>& vec);
 
@@ -112,6 +115,25 @@ namespace MySTL {
     }
 
     template<typename T>
+    inline constexpr void Vector<T>::operator=(const Vector<T>& vec)
+    {
+        this->elements_num = vec.elements_num;
+        this->capacity_num = vec.capacity_num;
+        delete[] this->_data;
+        this->_data = new T[this->capacity_num];
+        memmove(this->_data, vec._data, this->elements_num * sizeof(T));
+    }
+
+    template<typename T>
+    inline constexpr void Vector<T>::operator=(Vector<T>&& vec) noexcept
+    {
+        this->_data = vec.data();
+        this->elements_num = vec.size();
+        this->capacity_num = vec.capacity();
+        vec._data = nullptr;
+    }
+
+    template<typename T>
     inline bool Vector<T>::operator==(const Vector<T>& vec)
     {
         return (*this == vec);
@@ -148,6 +170,7 @@ namespace MySTL {
             this->elements_num = 0;
         }
         catch (std::bad_alloc& e) {
+            std::cout << "Allocation Failed: " << e.what() << std::endl;
             this->_data = new T[128];
             this->capacity_num = 128;
             this->elements_num = 0;
@@ -161,6 +184,22 @@ namespace MySTL {
         this->capacity_num = n;
         this->elements_num = n;
         this->resize();
+    }
+
+    template<typename T>
+    inline Vector<T>::Vector(T* _begin, T* _end)
+    {
+        if (_end >= _begin) {
+            size_t length = _end - _begin + 1;
+            this->_data = new T[length + 128];
+            this->elements_num = length;
+            this->capacity_num = length + 128;
+            memmove(this->_data, _begin, length * sizeof(T));
+        }
+        else {
+            throw std::logic_error("Iterator Range Error!");
+        }
+
     }
 
     template<typename T>
@@ -182,7 +221,7 @@ namespace MySTL {
         this->elements_num = vec.size();
         this->resize();
 
-        vec.~Vector();
+        vec._data = nullptr;
     }
 
     template<typename T>
