@@ -13,6 +13,7 @@ namespace MySTL
 		size_t _size{ _Size };
 	public:
 		using iterator = T*;
+		using const_iterator = const T*;
 	public:
 		Array() = default;
 		Array(T _array[_Size]);
@@ -27,14 +28,17 @@ namespace MySTL
 		T& front() noexcept;
 		T& back() noexcept;
 
-		constexpr size_t size();
-		constexpr size_t max_size();
+		constexpr size_t size() const;
+		constexpr size_t max_size() const;
 
 		iterator begin();
 		iterator end();
+		const_iterator begin() const;
+		const_iterator end() const;
 		constexpr const T* data() const noexcept;
 
 		T& operator[](size_t _index);
+		const T& operator[](size_t _index) const;
 		T& at(size_t _index);
 
 		void operator=(std::initializer_list<T> l);
@@ -98,13 +102,13 @@ namespace MySTL
 	}
 
 	template<typename T, size_t _Size>
-	inline constexpr size_t Array<T, _Size>::size()
+	inline constexpr size_t Array<T, _Size>::size() const
 	{
 		return this->_size;
 	}
 
 	template<typename T, size_t _Size>
-	inline constexpr size_t Array<T, _Size>::max_size()
+	inline constexpr size_t Array<T, _Size>::max_size() const
 	{
 		return this->_size;
 	}
@@ -122,6 +126,18 @@ namespace MySTL
 	}
 
 	template<typename T, size_t _Size>
+	inline Array<T, _Size>::const_iterator Array<T, _Size>::begin() const
+	{
+		return this->_data;
+	}
+
+	template<typename T, size_t _Size>
+	inline Array<T, _Size>::const_iterator Array<T, _Size>::end() const
+	{
+		return this->_data + this->_size;
+	}
+
+	template<typename T, size_t _Size>
 	inline constexpr const T* Array<T, _Size>::data() const noexcept
 	{
 		return this->_data;
@@ -129,6 +145,12 @@ namespace MySTL
 
 	template<typename T, size_t _Size>
 	inline T& Array<T, _Size>::operator[](size_t _index)
+	{
+		return this->_data[_index];
+	}
+
+	template<typename T, size_t _Size>
+	inline const T& Array<T, _Size>::operator[](size_t _index) const
 	{
 		return this->_data[_index];
 	}
@@ -201,6 +223,7 @@ namespace MySTL
 	{
 	public:
 		using iterator = T*;
+		using const_iterator = const T*;
 	public:
 		Array() = default;
 		Array(T _array[0]) {}
@@ -219,6 +242,9 @@ namespace MySTL
 
 		iterator begin() { return nullptr; }
 		iterator end() { return nullptr; }
+		const_iterator begin() const { return nullptr; }
+		const_iterator end() const { return nullptr; }
+
 		const T* data() const noexcept { return nullptr; }
 
 		T& operator[](size_t _index) { return this->_data[_index]; }

@@ -12,6 +12,7 @@ namespace MySTL
 		size_t _size{ 0 };
 	public:
 		using iterator = unsigned char*;
+		using const_iterator = const unsigned char*;
 	public:
 		String() = default;
 		String(const char* _c_str);
@@ -36,29 +37,32 @@ namespace MySTL
 		void operator+=(char c);
 
 		unsigned char& operator[](size_t _index);
+		const unsigned char& operator[](size_t _index) const;
 		unsigned char& at(size_t _index);
 
-		constexpr bool operator==(const String& _Right);
-		constexpr bool operator!=(const String& _Right);
-		constexpr bool operator>(const String& _Right);
-		constexpr bool operator<(const String & _Right);
-		constexpr bool operator>=(const String& _Right);
-		constexpr bool operator<=(const String& _Right);
+		bool operator==(const String& _Right);
+		bool operator!=(const String& _Right);
+		bool operator>(const String& _Right);
+		bool operator<(const String & _Right);
+		bool operator>=(const String& _Right);
+		bool operator<=(const String& _Right);
 
-		constexpr bool operator==(const char* _c_Right);
-		constexpr bool operator!=(const char* _c_Right);
-		constexpr bool operator>(const char* _c_Right);
-		constexpr bool operator<(const char* _c_Right);
-		constexpr bool operator>=(const char* _c_Right);
-		constexpr bool operator<=(const char* _c_Right);
+		bool operator==(const char* _c_Right);
+		bool operator!=(const char* _c_Right);
+		bool operator>(const char* _c_Right);
+		bool operator<(const char* _c_Right);
+		bool operator>=(const char* _c_Right);
+		bool operator<=(const char* _c_Right);
 
-		size_t size();
-		size_t capacity();
-		constexpr bool empty();
+		size_t size() const noexcept;
+		size_t capacity() const noexcept;
+		constexpr bool empty() const noexcept;
 		const unsigned char* data();
 		const unsigned char* c_str();
 		iterator begin();
 		iterator end();
+		const_iterator begin() const;
+		const_iterator end() const;
 
 		void reserve(size_t new_capacity_size);
 		void resize(size_t new_elem_size);
@@ -69,8 +73,10 @@ namespace MySTL
 		void erase(iterator _pos);
 
 		void append(size_t _Count, char c);
-		void append(const String& _str);
+		void append(const String& _str, size_t _Begin = 0);
+		void append(const String& _str, size_t _Begin, size_t _Count);
 		void append(const char* _str, size_t _Count = 0);
+		void append(const char* _str, size_t _Begin, size_t _Count);
 		void append(std::initializer_list<char> l);
 		void push_back(char c);
 
@@ -100,13 +106,12 @@ namespace MySTL
 		}
 	};
 
-	constexpr bool operator==(const char* _Left, String _Right);
-	constexpr bool operator!=(const char* _Left, String _Right);
-	constexpr bool operator>(const char* _Left, String _Right);
-	constexpr bool operator<(const char* _Left, String _Right);
-	constexpr bool operator>=(const char* _Left, String _Right);
-	constexpr bool operator<=(const char* _Left, String _Right);
-
+	bool operator==(const char* _Left, String _Right);
+	bool operator!=(const char* _Left, String _Right);
+	bool operator>(const char* _Left, String _Right);
+	bool operator<(const char* _Left, String _Right);
+	bool operator>=(const char* _Left, String _Right);
+	bool operator<=(const char* _Left, String _Right);
 }
 
 

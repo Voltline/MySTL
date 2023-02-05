@@ -16,6 +16,7 @@ namespace MySTL {
         void resize();
     public:
         using iterator = T*;  // Random Iterator
+        using const_iterator = const T*; // Constant Iterator
     public:
         Vector();
         Vector(T* arr, size_t n);
@@ -31,8 +32,10 @@ namespace MySTL {
         void resize(size_t new_elem_num, T value);
         void reserve(size_t new_capacity);
 
-        Vector<T>::iterator begin();
-        Vector<T>::iterator end();
+        iterator begin();
+        iterator end();
+        const_iterator begin() const;
+        const_iterator end() const;
 
         void push_back(T elem);
         void pop_back();
@@ -44,14 +47,15 @@ namespace MySTL {
         void insert(Vector<T>::iterator pos, 
             Vector<T>::iterator other_pos_begin, Vector<T>::iterator other_pos_end);
 
-        bool empty();
-        size_t capacity();
-        size_t size();
+        bool empty() const noexcept;
+        size_t capacity() const noexcept;
+        size_t size() const noexcept;
         T* data();
 
         constexpr void swap(Vector<T>& _Right);
 
         T& operator[](size_t index);
+        const T& operator[](size_t index) const;
         constexpr void operator=(const Vector<T>& vec);
         constexpr void operator=(Vector<T>&& vec) noexcept;
         bool operator==(const Vector<T>& vec);
@@ -105,6 +109,17 @@ namespace MySTL {
 
     template<typename T>
     T& Vector<T>::operator[](size_t index) 
+    {
+        if (index < this->size()) {
+            return this->_data[index];
+        }
+        else {
+            throw std::out_of_range("Out of Range!");
+        }
+    }
+
+    template<typename T>
+    const T& Vector<T>::operator[](size_t index) const
     {
         if (index < this->size()) {
             return this->_data[index];
@@ -301,20 +316,20 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline bool Vector<T>::empty() 
+    inline bool Vector<T>::empty() const noexcept
     {
         if (this->elements_num == 0) return true;
         else return false;
     }
 
     template<typename T>
-    inline size_t Vector<T>::capacity()
+    inline size_t Vector<T>::capacity() const noexcept
     {
         return this->capacity_num;
     }
 
     template<typename T>
-    inline size_t Vector<T>::size()
+    inline size_t Vector<T>::size() const noexcept
     {
         return this->elements_num;
     }
@@ -372,6 +387,18 @@ namespace MySTL {
 
     template<typename T>
     inline Vector<T>::iterator Vector<T>::end()
+    {
+        return this->_data + this->elements_num;
+    }
+
+    template<typename T>
+    inline Vector<T>::const_iterator Vector<T>::begin() const
+    {
+        return this->_data;
+    }
+
+    template<typename T>
+    inline Vector<T>::const_iterator Vector<T>::end() const
     {
         return this->_data + this->elements_num;
     }
@@ -489,5 +516,4 @@ namespace MySTL {
             throw IteratorOutOfRangeException{};
         }
     }
-
 }
