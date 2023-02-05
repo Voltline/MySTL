@@ -1,4 +1,5 @@
 #include "String.h"
+#include "exceptions.h"
 
 namespace MySTL
 {
@@ -9,7 +10,7 @@ namespace MySTL
 		this->container =
 			Vector<unsigned char>{
 				const_cast<unsigned char*>((unsigned char*)_c_str),
-				const_cast<unsigned char*>((unsigned char*)(_c_str + (length + 1)))
+				const_cast<unsigned char*>((unsigned char*)(_c_str + length))
 		};
 		this->container[_size] = '\0';
 	}
@@ -25,7 +26,7 @@ namespace MySTL
 		this->container =
 			Vector<unsigned char>{
 				const_cast<unsigned char*>((unsigned char*)_c_str),
-				const_cast<unsigned char*>((unsigned char*)(_c_str + (length + 1)))
+				const_cast<unsigned char*>((unsigned char*)(_c_str + length))
 		};
 		this->container[_size] = '\0';
 	}
@@ -41,7 +42,7 @@ namespace MySTL
 		this->container =
 			Vector<unsigned char>{
 				const_cast<unsigned char*>((unsigned char*)_c_str),
-				const_cast<unsigned char*>((unsigned char*)(_c_str + (length + 1)))
+				const_cast<unsigned char*>((unsigned char*)(_c_str + length))
 		};
 		this->container[_size] = '\0';
 	}
@@ -52,7 +53,12 @@ namespace MySTL
 		this->_size = _size;
 	}
 
-	String::String(String& _str)
+	String::String()
+	{
+		this->container = Vector<unsigned char>{};
+	}
+
+	String::String(const String& _str)
 	{
 		this->container = Vector<unsigned char>(_str.container);
 		this->_size = _str._size;
@@ -132,11 +138,6 @@ namespace MySTL
 		return temp;
 	}
 
-	constexpr bool String::empty() const noexcept
-	{
-		return (this->_size == 0);
-	}
-
 	size_t String::size() const noexcept
 	{
 		return this->_size;
@@ -145,6 +146,12 @@ namespace MySTL
 	size_t String::capacity() const noexcept
 	{
 		return this->container.capacity();
+	}
+
+	bool String::empty() const noexcept
+	{
+		if (this->_size != 0) return false;
+		else return true;
 	}
 
 	const unsigned char* String::data()
@@ -196,6 +203,150 @@ namespace MySTL
 
 	void String::erase(const size_t _Where)
 	{
+		if (_Where <= this->_size) {
+			this->_size = _Where;
+			this->container.erase(this->container.begin() + _Where, this->container.end());
+			this->container.push_back('\0');
+		}
+	}
+
+	void String::erase(const size_t _Off, const size_t _Count)
+	{
+		if (_Off <= this->_size) {
+			if (this->_size - _Off > _Count) {
+				this->_size -= _Count;
+				this->container.erase(this->container.begin() + _Off, this->container.begin() + _Off + _Count);
+				this->container[this->_size] = '\0';
+			}
+			else {
+				this->erase(_Off);
+			}
+		}
+	}
+
+	void String::erase(iterator _begin, iterator _end)
+	{
+		if (_end >= _begin) {
+			if (_begin >= this->begin()) {
+				size_t _Off = _begin - this->begin();
+				size_t _Count = _end - _begin;
+				if (_Off <= this->_size) {
+					if (this->_size - _Off > _Count) {
+						this->_size -= _Count;
+						this->container.erase(this->container.begin() + _Off, this->container.begin() + _Off + _Count);
+						this->container[this->_size] = '\0';
+					}
+					else {
+						this->erase(_Off);
+					}
+				}
+			}
+			else {
+				throw IteratorOutOfRangeException{};
+			}
+		}
+		else {
+			throw IteratorErrorException{};
+		}
+	}
+
+	void String::erase(iterator _pos)
+	{
+		if (_pos >= this->begin()) {
+			if (_pos < this->end()) {
+				size_t _Where = _pos - this->begin();
+				if (_Where <= this->_size) {
+					this->_size--;
+					this->container.erase(_pos, _pos + 1);
+				}
+			}
+		}
+		else {
+			throw IteratorErrorException{};
+		}
+	}
+
+	void String::append(size_t _Count, char c)
+	{
+		for (size_t i = 0; i < _Count; i++) {
+			this->push_back(c);
+		}
+	}
+
+	void String::append(const String& _str)
+	{
+		*this += _str;
+	}
+
+	void String::append(const String& _str, size_t _Begin)
+	{
+		if (_Begin <= _str.size()) {
+			if (_Begin == 0) {
+				*this += _str;
+			}
+			else {
+				for (auto it = _str.begin() + _Begin; it != _str.end(); it++) {
+					this->push_back(*it);
+				}
+			}
+		}
+		else {
+			throw std::out_of_range("Begin index out of range!");
+		}
+	}
+
+	void String::append(const String& _str, size_t _Begin, size_t _Count)
+	{
+		if (_Begin <= _str.size()) {
+			if (_Begin + _Count > _str.size()) {
+				_Count = _str.size() - _Begin;
+			}
+			for (size_t i = 0; i < _Count; i++) {
+				this->push_back(_str[_Begin + i]);
+			}
+		}
+		else {
+			throw std::out_of_range("Begin index out of range!");
+		}
+	}
+
+	void String::append(const char* _str)
+	{
+		*this += _str;
+	}
+
+	void String::append(const char* _str, size_t _Begin)
+	{
+		if (_Begin <= strlen(_str)) {
+			*this += (_str + _Begin);
+		}
+		else {
+			throw std::out_of_range("Begin index out of range!");
+		}
+	}
+
+	void String::append(const char* _str, size_t _Begin, size_t _Count)
+	{
+		if (_Begin <= strlen(_str)) {
+			if (strlen(_str) - _Begin < _Count) {
+				_Count = strlen(_str) - _Begin;
+			}
+			if (_Count != 0) {
+				for (size_t i = 0; i < _Count; i++) {
+					this->push_back(_str[_Begin + i]);
+				}
+			}
+		}
+		else {
+			throw std::out_of_range("Begin index out of range!");
+		}
+	}
+
+	void String::append(std::initializer_list<char> l)
+	{
+		for (auto& i : l) {
+			this->push_back(i);
+		}
 	}
 
 	unsigned char& String::operator[](size_t _index)
@@ -285,7 +436,7 @@ namespace MySTL
 
 	void String::push_back(char c)
 	{
-		if (this->_size == 0) {
+		if (this->_size == this->container.size()) {
 			this->container.push_back(c);
 		}
 		else {
@@ -293,6 +444,16 @@ namespace MySTL
 		}
 		this->container.push_back('\0');
 		this->_size++;
+	}
+
+	size_t String::find(char c, size_t _begin_pos)
+	{
+		for (size_t i = _begin_pos; i < this->_size; i++) {
+			if (this->container[i] == c) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	bool String::operator==(const char* _c_Right)

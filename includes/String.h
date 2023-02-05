@@ -14,12 +14,12 @@ namespace MySTL
 		using iterator = unsigned char*;
 		using const_iterator = const unsigned char*;
 	public:
-		String() = default;
+		String();
 		String(const char* _c_str);
 		String(const char* _c_str, size_t _size);
 		String(const char* _c_str, size_t _begin, size_t _size);
 		String(size_t _size, char c);
-		String(String& _str);
+		String(const String& _str);
 		String(String&& _mv_str) noexcept;
 		String(std::initializer_list<char> l);
 		~String();
@@ -56,7 +56,7 @@ namespace MySTL
 
 		size_t size() const noexcept;
 		size_t capacity() const noexcept;
-		constexpr bool empty() const noexcept;
+		bool empty() const noexcept;
 		const unsigned char* data();
 		const unsigned char* c_str();
 		iterator begin();
@@ -73,9 +73,11 @@ namespace MySTL
 		void erase(iterator _pos);
 
 		void append(size_t _Count, char c);
+		void append(const String& _str);
 		void append(const String& _str, size_t _Begin = 0);
 		void append(const String& _str, size_t _Begin, size_t _Count);
-		void append(const char* _str, size_t _Count = 0);
+		void append(const char* _str);
+		void append(const char* _str, size_t _Begin);
 		void append(const char* _str, size_t _Begin, size_t _Count);
 		void append(std::initializer_list<char> l);
 		void push_back(char c);
@@ -113,5 +115,3 @@ namespace MySTL
 	bool operator>=(const char* _Left, String _Right);
 	bool operator<=(const char* _Left, String _Right);
 }
-
-

@@ -25,7 +25,7 @@ namespace MySTL {
         Vector(size_t n);
         Vector(Vector<T>&& vec) noexcept;
         Vector(std::initializer_list<T> l);
-        Vector(Vector<T>& sec);
+        Vector(const Vector<T>& sec);
         ~Vector();
 
         void resize(size_t new_elem_num);
@@ -256,7 +256,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::Vector(Vector<T>& sec) 
+    Vector<T>::Vector(const Vector<T>& sec) 
     {
         this->capacity_num = sec.capacity();
         this->elements_num = sec.size();
