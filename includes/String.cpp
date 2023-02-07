@@ -3,6 +3,11 @@
 
 namespace MySTL
 {
+	String::String()
+	{
+		this->container = Vector<unsigned char>{};
+	}
+
 	String::String(const char* _c_str)
 	{
 		size_t length{ strlen(_c_str) };
@@ -51,11 +56,6 @@ namespace MySTL
 	{
 		this->container = Vector<unsigned char>(_size, c);
 		this->_size = _size;
-	}
-
-	String::String()
-	{
-		this->container = Vector<unsigned char>{};
 	}
 
 	String::String(const String& _str)
@@ -137,6 +137,137 @@ namespace MySTL
 		temp.push_back(c);
 		return temp;
 	}
+
+	void String::operator+=(const String& _Right)
+	{
+		for (auto& i : _Right) {
+			this->push_back(i);
+		}
+	}
+
+	void String::operator+=(const char* _str)
+	{
+		size_t length{ strlen(_str) };
+		for (size_t i = 0; i < length; i++) {
+			this->push_back(_str[i]);
+		}
+	}
+
+	void String::operator+=(char c)
+	{
+		this->push_back(c);
+	}
+
+	unsigned char& String::operator[](size_t _index)
+	{
+		return this->container[_index];
+	}
+
+	const unsigned char& String::operator[](size_t _index) const
+	{
+		return this->container[_index];
+	}
+
+	unsigned char& String::at(size_t _index)
+	{
+		if (_index <= this->_size) {
+			return this->container[_index];
+		}
+		else {
+			throw std::out_of_range("Index Out of Range");
+		}
+	}
+
+	bool String::operator==(const String& _Right)
+	{
+		if (this->_size != _Right._size) {
+			return false;
+		}
+		else {
+			for (size_t i = 0; i < this->_size; i++) {
+				if (this->container[i] != _Right[i]) return false;
+			}
+			return true;
+		}
+	}
+
+	bool String::operator!=(const String& _Right)
+	{
+		return !(*this == _Right);
+	}
+
+	bool String::operator>(const String& _Right)
+	{
+		size_t min_size{ this->_size < _Right.size() ? this->_size : _Right.size() };
+		for (size_t i = 0; i < min_size; i++) {
+			if (this->container[i] > _Right[i]) return true;
+			else if (this->container[i] < _Right[i]) {
+				return false;
+			}
+		}
+		return this->_size > _Right.size();
+	}
+
+	bool String::operator<(const String& _Right)
+	{
+		return (*this <= _Right) && (*this != _Right);
+	}
+
+	bool String::operator>=(const String& _Right)
+	{
+		return (*this > _Right) || (*this == _Right);
+	}
+
+	bool String::operator<=(const String& _Right)
+	{
+		return !(*this > _Right);
+	}
+
+	bool String::operator==(const char* _c_Right)
+	{
+		if (strlen(_c_Right) != this->_size) return false;
+		else {
+			for (size_t i = 0; i < this->_size; i++) {
+				if (this->container[i] != _c_Right[i])
+					return false;
+			}
+			return true;
+		}
+	}
+
+	bool String::operator!=(const char* _c_Right)
+	{
+		return !(*this == _c_Right);
+	}
+
+	bool String::operator>(const char* _c_Right)
+	{
+		size_t length{ strlen(_c_Right) };
+		size_t min_size{ this->_size < length ? this->_size : length };
+		for (size_t i = 0; i < min_size; i++) {
+			if (this->container[i] > _c_Right[i]) return true;
+			else if (this->container[i] < _c_Right[i]) {
+				return false;
+			}
+		}
+		return this->_size > length;
+	}
+
+	bool String::operator<(const char* _c_Right)
+	{
+		return (*this <= _c_Right) && (*this != _c_Right);
+	}
+
+	bool String::operator>=(const char* _c_Right)
+	{
+		return (*this > _c_Right) || (*this == _c_Right);
+	}
+
+	bool String::operator<=(const char* _c_Right)
+	{
+		return !(*this > _c_Right);
+	}
+
 
 	size_t String::size() const noexcept
 	{
@@ -349,91 +480,6 @@ namespace MySTL
 		}
 	}
 
-	unsigned char& String::operator[](size_t _index)
-	{
-		return this->container[_index];
-	}
-
-	const unsigned char& String::operator[](size_t _index) const
-	{
-		return this->container[_index];
-	}
-
-	unsigned char& String::at(size_t _index)
-	{
-		if (_index <= this->_size) {
-			return this->container[_index];
-		}
-		else {
-			throw std::out_of_range("Index Out of Range");
-		}
-	}
-
-	void String::operator+=(const String& _Right)
-	{
-		for (auto& i : _Right) {
-			this->push_back(i);
-		}
-	}
-
-	void String::operator+=(const char* _str)
-	{
-		size_t length{ strlen(_str) };
-		for (size_t i = 0; i < length; i++) {
-			this->push_back(_str[i]);
-		}
-	}
-
-	void String::operator+=(char c)
-	{
-		this->push_back(c);
-	}
-
-	bool String::operator==(const String& _Right)
-	{
-		if (this->_size != _Right._size) {
-			return false;
-		}
-		else {
-			for (size_t i = 0; i < this->_size; i++) {
-				if (this->container[i] != _Right[i]) return false;
-			}
-			return true;
-		}
-	}
-
-	bool String::operator!=(const String& _Right)
-	{
-		return !(*this == _Right);
-	}
-
-	bool String::operator>(const String& _Right)
-	{
-		size_t min_size{ this->_size < _Right.size() ? this->_size : _Right.size() };
-		for (size_t i = 0; i < min_size; i++) {
-			if (this->container[i] > _Right[i]) return true;
-			else if (this->container[i] < _Right[i]) {
-				return false;
-			}
-		}
-		return this->_size > _Right.size();
-	}
-
-	bool String::operator<(const String& _Right)
-	{
-		return (*this <= _Right) && (*this != _Right);
-	}
-
-	bool String::operator>=(const String& _Right)
-	{
-		return (*this > _Right) || (*this == _Right);
-	}
-
-	bool String::operator<=(const String& _Right)
-	{
-		return !(*this > _Right);
-	}
-
 	void String::push_back(char c)
 	{
 		if (this->_size == this->container.size()) {
@@ -456,48 +502,112 @@ namespace MySTL
 		return -1;
 	}
 
-	bool String::operator==(const char* _c_Right)
+	size_t String::find(const char* _str, size_t _begin_pos)
 	{
-		if (strlen(_c_Right) != this->_size) return false;
+		size_t length{ strlen(_str) };
+		bool isFind{ true };
+		if (this->_size < length) return -1;
 		else {
-			for (size_t i = 0; i < this->_size; i++) {
-				if (this->container[i] != _c_Right[i])
-					return false;
+			for (size_t i = _begin_pos; i < this->_size; i++) {
+				if (this->_size - i >= length) {
+					if (this->container[i] == _str[0]) {
+						isFind = true;
+						for (size_t j = 1; j < length; j++) {
+							if (this->container[i + j] != _str[j]) {
+								i = i + j - 1;
+								isFind = false;
+								break;
+							}
+						}
+						if (isFind) return i;
+					}
+				}
+				else {
+					return -1;
+				}
 			}
-			return true;
+			return -1;
 		}
 	}
 
-	bool String::operator!=(const char* _c_Right)
+	size_t String::find(const String& _str, size_t _begin_pos)
 	{
-		return !(*this == _c_Right);
-	}
-
-	bool String::operator>(const char* _c_Right)
-	{
-		size_t length{ strlen(_c_Right) };
-		size_t min_size{ this->_size < length ? this->_size : length };
-		for (size_t i = 0; i < min_size; i++) {
-			if (this->container[i] > _c_Right[i]) return true;
-			else if (this->container[i] < _c_Right[i]) {
-				return false;
+		size_t length{ _str.size()};
+		bool isFind{ true };
+		if (this->_size < length) return -1;
+		else {
+			for (size_t i = _begin_pos; i < this->_size; i++) {
+				if (this->_size - i >= length) {
+					if (this->container[i] == _str[0]) {
+						isFind = true;
+						for (size_t j = 1; j < length; j++) {
+							if (this->container[i + j] != _str[j]) {
+								i = i + j - 1;
+								isFind = false;
+								break;
+							}
+						}
+						if (isFind) return i;
+					}
+				}
+				else {
+					return -1;
+				}
 			}
+			return -1;
 		}
-		return this->_size > length;
+	}
+	void String::swap(String& _Right)
+	{
+		String temp{ _Right };
+		_Right.clear();
+		for (auto& c : *this) {
+			_Right.push_back(c);
+		}
+		this->clear();
+		for (auto& c : temp) {
+			this->push_back(c);
+		}
+		temp.~String();
 	}
 
-	bool String::operator<(const char* _c_Right)
+	bool operator==(const char* _Left, String _Right)
 	{
-		return (*this <= _c_Right) && (*this != _c_Right);
+		return _Right == _Left;
 	}
 
-	bool String::operator>=(const char* _c_Right)
+	bool operator!=(const char* _Left, String _Right)
 	{
-		return (*this > _c_Right) || (*this == _c_Right);
+		return _Right != _Left;
 	}
 
-	bool String::operator<=(const char* _c_Right)
+	bool operator>(const char* _Left, String _Right)
 	{
-		return !(*this > _c_Right);
+		return _Right < _Left;
+	}
+
+	bool operator<(const char* _Left, String _Right)
+	{
+		return _Right > _Left;
+	}
+
+	bool operator>=(const char* _Left, String _Right)
+	{
+		return _Right <= _Left;
+	}
+	bool operator<=(const char* _Left, String _Right)
+	{
+		return _Right >= _Left;
+	}
+
+	std::istream& getline(std::istream& input, String& _Target, const char _End)
+	{
+		_Target.clear();
+		unsigned char c = input.get();
+		while (c != '\n') {
+			_Target.push_back(c);
+			c = input.get();
+		}
+		return input;
 	}
 }

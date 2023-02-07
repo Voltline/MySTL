@@ -86,7 +86,7 @@ namespace MySTL
 		size_t find(const char* _str, size_t _begin_pos = 0);
 		size_t find(const String& _str, size_t _begin_pos = 0);
 
-		constexpr void swap(const String& _Right);
+		void swap(String& _Right);
 
 		friend std::ostream& operator<<(std::ostream& output, String _str)
 		{
@@ -114,4 +114,6 @@ namespace MySTL
 	bool operator<(const char* _Left, String _Right);
 	bool operator>=(const char* _Left, String _Right);
 	bool operator<=(const char* _Left, String _Right);
+
+	std::istream& getline(std::istream& input, String& _Target, const char _End = '\n');
 }

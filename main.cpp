@@ -2,6 +2,7 @@
 #include "tests/ArrayTest.h"
 #include "tests/VectorTest.h"
 #include "tests/StringTest.h"
+#include <string>
 using namespace std;
 
 int main()
