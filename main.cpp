@@ -2,12 +2,15 @@
 #include "tests/ArrayTest.h"
 #include "tests/VectorTest.h"
 #include "tests/StringTest.h"
-#include <string>
+#include <list>
+#include "includes/List.h"
 using namespace std;
 
 int main()
 {
-    StringTest::StringTest();
+    MySTL::List<int> l{ 1, 2, 3, 4, 5 };
+    l.view();
+   //  StringTest::StringTest();
     // ArrayTest::ArrayTest();
     // VectorTest::VectorTest();
     return 0;
