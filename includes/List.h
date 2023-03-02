@@ -123,7 +123,7 @@ namespace MySTL
 	template<typename T>
 	inline Iterator<T> Iterator<T>::operator++(int n) // a++
 	{
-		Node<T>* temp_ptr{ this };
+		Node<T>* temp_ptr{ this->node_ptr };
 		*this += 1;
 		return Iterator<T>(temp_ptr);
 	}
@@ -138,7 +138,7 @@ namespace MySTL
 	template<typename T>
 	inline Iterator<T> Iterator<T>::operator--(int n) // a--
 	{
-		Node<T>* temp_ptr{ this };
+		Node<T>* temp_ptr{ this->node_ptr };
 		*this -= 1;
 		return Iterator<T>(temp_ptr);
 	}

@@ -10,8 +10,14 @@ int main()
 {
     MySTL::List<int> l{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     l.view();
+    for (auto& i : l) {
+        cout << &i << endl;
+    }
     MySTL::List<int> u(l);
-    u.view();
+    u.view(); // 调用拷贝该构造函数
+    for (auto& i : u) {
+        cout << &i << endl;
+    }
    //  StringTest::StringTest();
     // ArrayTest::ArrayTest();
     // VectorTest::VectorTest();
