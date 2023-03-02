@@ -11,7 +11,7 @@ namespace ArrayTest
 		std::cout << "Initialize arr: ";
 		arr.view();
 		
-		arr.fill(6.0);
+		arr.fill(6);
 		arr[3] = 6;
 		std::cout << "Fill and change arr: ";
 		arr.view();

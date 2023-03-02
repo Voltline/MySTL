@@ -24,7 +24,9 @@ namespace MySTL
 	template<typename T>
 	inline Node<T>::~Node()
 	{
-		this->last->next = this->next;
+		if (this->last != nullptr && this->next != nullptr) {
+			this->last->next = this->next;
+		}
 	}
 
 	template<typename T>
@@ -51,10 +53,8 @@ namespace MySTL
 		bool operator!=(Iterator<T> _Right);
 
 		void operator=(const Iterator<T>& _Right);
-
 		void operator+=(size_t _Off);
 		void operator-=(size_t _Off);
-
 	};
 
 	template<typename T>
@@ -205,7 +205,7 @@ namespace MySTL
 		List(std::initializer_list<T> l);
 		List(const List<T>& _Right);
 		List(List<T>&& _mv_Right) noexcept;
-		~List() = default;
+		~List();
 
 		iterator begin()
 		{
@@ -277,22 +277,66 @@ namespace MySTL
 		this->_tail->next = this->_end;
 	}
 
-	/*template<typename T>
+	template<typename T>
 	inline List<T>::List(const List<T>& _Right)
 	{
+		size_t length = _Right._size;
+		if (_Right._size == 1) {
+			this->_head = new Node<T>{ *_Right._head };
+			this->_end = this->_head;
+			this->_size++;
+		}
+		else {
+			size_t i = 0;
+			for (auto& val : _Right) {
+				if (i == 0) {
+					this->_head = new Node<T>{ val };
+					this->_tail = this->_head;
+				}
+				else if (i < length) {
+					Node<T>* temp = new Node<T>{ val };
+					temp->last = this->_tail;
+					this->_tail->next = temp;
+					this->_tail = temp;
+				}
+				i++;
+				this->_size++;
+			}
+		}
+		this->_end = new Node<T>{};
+		this->_end->last = this->_tail;
+		this->_tail->next = this->_end;
 	}
-
+	
 	template<typename T>
 	inline List<T>::List(List<T>&& _mv_Right) noexcept
 	{
+		this->_head = _mv_Right._head;
+		this->_tail = _mv_Right._tail;
+		this->_end = _mv_Right._end;
+		this->_size = _mv_Right._size;
+
+		_mv_Right._head = nullptr;
+		_mv_Right._tail = nullptr;
+		_mv_Right._end = nullptr;
+		_mv_Right._size = 0;
 	}
 
 	template<typename T>
 	inline List<T>::~List()
 	{
-
+		Node<T>* _node_ptr{ this->_head }, * _temp_ptr{ nullptr };
+		while (_node_ptr != this->_end) {
+			_temp_ptr = _node_ptr;
+			_node_ptr = _node_ptr->next;
+			delete _temp_ptr;
+		}
+		delete this->_end;
+		this->_head = nullptr;
+		this->_tail = nullptr;
+		this->_end = nullptr;
+		this->_size = 0;
 	}
-	*/
 
 	template<typename T>
 	inline T& List<T>::front()
