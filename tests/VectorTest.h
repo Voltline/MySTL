@@ -32,7 +32,6 @@ namespace VectorTest
         std::cout << "Push_back to u : ";
         u.view();
 
-
         v.insert(v.begin() + 2, u.begin(), u.end());
         std::cout << "Insert from u to v : ";
         v.view();

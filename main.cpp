@@ -1,4 +1,4 @@
-ï»¿#include <iostream>
+#include <iostream>
 #include "tests/ArrayTest.h"
 #include "tests/VectorTest.h"
 #include "tests/StringTest.h"
@@ -14,11 +14,17 @@ int main()
         cout << &i << endl;
     }
     MySTL::List<int> u(l);
-    u.view(); // è°ƒç”¨æ‹·è´è¯¥æ„é€ å‡½æ•°
+    u.view(); // µ÷ÓÃ¿½±´¸Ã¹¹Ôìº¯Êı
     for (auto& i : u) {
         cout << &i << endl;
     }
-   //  StringTest::StringTest();
+    u.push_back(3);
+    u.view();
+    MySTL::List<int> z{ 1 };
+    z.view();
+    z.pop_back();
+    z.view();
+    // StringTest::StringTest();
     // ArrayTest::ArrayTest();
     // VectorTest::VectorTest();
     return 0;

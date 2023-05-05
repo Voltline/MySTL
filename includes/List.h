@@ -12,7 +12,6 @@ namespace MySTL
 	public:
 		Node() = default;
 		Node(T value);
-		~Node();
 	};
 
 	template<typename T>
@@ -231,8 +230,8 @@ namespace MySTL
 
 		void push_back(T value);
 		void push_front(T value);
-		void pop_back(T value);
-		void pop_front(T value);
+		void pop_back();
+		void pop_front();
 		void clear();
 
 		void erase(List<T>::const_iterator _Where);
@@ -336,6 +335,81 @@ namespace MySTL
 		this->_tail = nullptr;
 		this->_end = nullptr;
 		this->_size = 0;
+	}
+
+	template<typename T>
+	inline void List<T>::push_back(T value)
+	{
+		if (this->_size == 1) {
+			this->_tail = new Node<T>{ value };
+			this->_head->next = this->_tail;
+			this->_tail->last = this->_head;
+
+			this->_tail->next = this->_end;
+			this->_end->last = this->_tail;
+			this->_size++;
+		}
+		else {
+			Node<T>* temp_node_ptr = new Node<T>{ value };
+			this->_tail->next = temp_node_ptr;
+			temp_node_ptr->last = this->_tail;
+			
+			this->_tail = temp_node_ptr;
+			this->_tail->next = this->_end;
+			this->_end->last = this->_tail;
+
+			this->_size++;
+		}
+	}
+	
+	template<typename T>
+	inline void List<T>::push_front(T value)
+	{
+		Node<T>* temp_node_ptr = new Node<T>{ value };
+		if (this->_size == 1) {
+			this->_head = temp_node_ptr;
+			this->_head->next = this->_tail;
+			this->_tail->last = this->_head;
+			this->_head->last = nullptr;
+			this->_size++;
+		}
+		else {
+			temp_node_ptr->next = this->_head;
+			this->_head->last = temp_node_ptr;
+			this->_head = temp_node_ptr;
+			this->_size++;
+		}
+	}
+	
+	template<typename T>
+	void List<T>::pop_back()
+	{
+		/*
+		if (this->_size != 1) {
+			Node<T>* temp = this->_tail;
+			this->_tail = this->_tail->last;
+			this->_tail->next = this->_end;
+			this->_end->last = this->_tail;
+			temp->~Node();
+		}
+		else {
+			Node<T>* temp = this->_tail;
+			this->_
+		}
+
+		this->_size--;*/
+	}
+	
+	template<typename T>
+	inline void List<T>::pop_front()
+	{
+
+	}
+	
+	template<typename T>
+	inline void List<T>::clear()
+	{
+
 	}
 
 	template<typename T>

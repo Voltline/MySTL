@@ -66,7 +66,6 @@ namespace MySTL
 	Array<T, _Size>::Array(Array<T, _Size>&& _array) noexcept
 	{
 		this->_data = _array._data;
-		_array.~Array();
 	}
 
 	template<typename T, size_t _Size>

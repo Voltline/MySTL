@@ -69,7 +69,6 @@ namespace MySTL
 		this->container = std::move(_mv_str.container);
 		this->_size = _mv_str._size;
 		_mv_str.container = Vector<unsigned char>{};
-		_mv_str.~String();
 	}
 
 	String::String(std::initializer_list<char> l)
@@ -568,7 +567,6 @@ namespace MySTL
 		for (auto& c : temp) {
 			this->push_back(c);
 		}
-		temp.~String();
 	}
 
 	bool operator==(const char* _Left, String _Right)
