@@ -12,6 +12,7 @@ namespace MySTL
 	public:
 		Node() = default;
 		Node(T value);
+		~Node();
 	};
 
 	template<typename T>
