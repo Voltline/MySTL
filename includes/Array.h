@@ -18,7 +18,6 @@ namespace MySTL
 		Array() = default;
 		Array(T _array[_Size]);
 		Array(const Array<T, _Size>& _array);
-		Array(Array<T, _Size>&& _array) noexcept;
 		Array(std::initializer_list<T> l);
 		~Array() = default;
 
@@ -60,12 +59,6 @@ namespace MySTL
 	Array<T, _Size>::Array(const Array<T, _Size>& _array)
 	{
 		memmove(this->_data, _array._data, _Size * sizeof(T));
-	}
-
-	template<typename T, size_t _Size>
-	Array<T, _Size>::Array(Array<T, _Size>&& _array) noexcept
-	{
-		this->_data = _array._data;
 	}
 
 	template<typename T, size_t _Size>
@@ -227,7 +220,6 @@ namespace MySTL
 		Array() = default;
 		Array(T _array[0]) {}
 		Array(const Array<T, 0>& _array) {}
-		Array(Array<T, 0>&& _array) noexcept {}
 		Array(std::initializer_list<T> l) {}
 
 		constexpr void fill(const T& _value) {}
