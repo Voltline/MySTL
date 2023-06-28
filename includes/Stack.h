@@ -10,6 +10,5 @@ namespace MySTL
 		vector<T> _data{};
 	public:
 		stack() = default;
-		stack()
 	};
 }
