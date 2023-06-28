@@ -1,38 +1,39 @@
 #pragma once
 #include <iostream>
 #include <cstring>
-#include "Vector.h"
+#include "vector.h"
 
 namespace MySTL 
 {
-	class String
+	class string
 	{
 	private:
-		Vector<unsigned char> container;
+		vector<unsigned char> container;
 		size_t _size{ 0 };
 	public:
 		using iterator = unsigned char*;
 		using const_iterator = const unsigned char*;
 	public:
-		String();
-		String(const char* _c_str);
-		String(const char* _c_str, size_t _size);
-		String(const char* _c_str, size_t _begin, size_t _size);
-		String(size_t _size, char c);
-		String(const String& _str);
-		String(String&& _mv_str) noexcept;
-		String(std::initializer_list<char> l);
-		~String();
+		string();
+		string(const char* _c_str);
+		string(const char* _c_str, size_t _size);
+		string(const char* _c_str, size_t _begin, size_t _size);
+		string(size_t _size, char c);
+		string(const string& _str);
+		string(string&& _mv_str) noexcept;
+		string(std::initializer_list<char> l);
+		~string();
 
-		void operator=(const String& _Right);
-		void operator=(const char* _str);
-		void operator=(char c);
+		string& operator=(const string& _Right);
+		string& operator=(string&& _Right) noexcept;
+		string& operator=(const char* _str);
+		string& operator=(char c);
 
-		String operator+(const String& _Right);
-		String operator+(const char* _str);
-		String operator+(char c);
+		string operator+(const string& _Right);
+		string operator+(const char* _str);
+		string operator+(char c);
 
-		void operator+=(const String& _Right);
+		void operator+=(const string& _Right);
 		void operator+=(const char* _str);
 		void operator+=(char c);
 
@@ -40,12 +41,12 @@ namespace MySTL
 		const unsigned char& operator[](size_t _index) const;
 		unsigned char& at(size_t _index);
 
-		bool operator==(const String& _Right);
-		bool operator!=(const String& _Right);
-		bool operator>(const String& _Right);
-		bool operator<(const String & _Right);
-		bool operator>=(const String& _Right);
-		bool operator<=(const String& _Right);
+		bool operator==(const string& _Right);
+		bool operator!=(const string& _Right);
+		bool operator>(const string& _Right);
+		bool operator<(const string & _Right);
+		bool operator>=(const string& _Right);
+		bool operator<=(const string& _Right);
 
 		bool operator==(const char* _c_Right);
 		bool operator!=(const char* _c_Right);
@@ -73,9 +74,9 @@ namespace MySTL
 		void erase(iterator _pos);
 
 		void append(size_t _Count, char c);
-		void append(const String& _str);
-		void append(const String& _str, size_t _Begin = 0);
-		void append(const String& _str, size_t _Begin, size_t _Count);
+		void append(const string& _str);
+		void append(const string& _str, size_t _Begin = 0);
+		void append(const string& _str, size_t _Begin, size_t _Count);
 		void append(const char* _str);
 		void append(const char* _str, size_t _Begin);
 		void append(const char* _str, size_t _Begin, size_t _Count);
@@ -84,11 +85,11 @@ namespace MySTL
 
 		size_t find(char c, size_t _begin_pos = 0);
 		size_t find(const char* _str, size_t _begin_pos = 0);
-		size_t find(const String& _str, size_t _begin_pos = 0);
+		size_t find(const string& _str, size_t _begin_pos = 0);
 
-		void swap(String& _Right);
+		void swap(string& _Right);
 
-		friend std::ostream& operator<<(std::ostream& output, String _str)
+		friend std::ostream& operator<<(std::ostream& output, string _str)
 		{
 			for (auto& i : _str) {
 				output << i;
@@ -96,7 +97,7 @@ namespace MySTL
 			return output;
 		}
 
-		friend std::istream& operator>>(std::istream& input, String& _str)
+		friend std::istream& operator>>(std::istream& input, string& _str)
 		{
 			_str.clear();
 			unsigned char c = input.get();
@@ -108,12 +109,12 @@ namespace MySTL
 		}
 	};
 
-	bool operator==(const char* _Left, String _Right);
-	bool operator!=(const char* _Left, String _Right);
-	bool operator>(const char* _Left, String _Right);
-	bool operator<(const char* _Left, String _Right);
-	bool operator>=(const char* _Left, String _Right);
-	bool operator<=(const char* _Left, String _Right);
+	bool operator==(const char* _Left, string _Right);
+	bool operator!=(const char* _Left, string _Right);
+	bool operator>(const char* _Left, string _Right);
+	bool operator<(const char* _Left, string _Right);
+	bool operator>=(const char* _Left, string _Right);
+	bool operator<=(const char* _Left, string _Right);
 
-	std::istream& getline(std::istream& input, String& _Target, const char _End = '\n');
+	std::istream& getline(std::istream& input, string& _Target, const char _End = '\n');
 }

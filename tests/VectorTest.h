@@ -1,13 +1,13 @@
 #pragma once
 #include <iostream>
-#include "../includes/Vector.h"
+#include "../includes/vector.h"
 
 namespace VectorTest
 {
 	void VectorTest()
 	{
         std::cout << "*-----Here are MySTL::Vector<T> Test-----*" << std::endl;
-        MySTL::Vector<int> u(4, 2), v{ 1, 2, 3, 4, 5, 6 };
+        MySTL::vector<int> u(4, 2), v{ 1, 2, 3, 4, 5, 6 };
         std::cout << "Init u : ";
         u.view();
         std::cout << "Init v : ";

@@ -7,7 +7,7 @@
 
 namespace MySTL {
     template<typename T>
-    class Vector
+    class vector
     {
     private:
         T* _data{ nullptr };
@@ -18,15 +18,15 @@ namespace MySTL {
         using iterator = T*;  // Random Iterator
         using const_iterator = const T*; // Constant Iterator
     public:
-        Vector();
-        Vector(T* arr, size_t n);
-        Vector(T* _begin, T* _end);
-        Vector(size_t _elem_num, T value);
-        Vector(size_t n);
-        Vector(Vector<T>&& vec) noexcept;
-        Vector(std::initializer_list<T> l);
-        Vector(const Vector<T>& sec);
-        ~Vector();
+        vector();
+        vector(T* arr, size_t n);
+        vector(T* _begin, T* _end);
+        vector(size_t _elem_num, T value);
+        vector(size_t n);
+        vector(vector<T>&& vec) noexcept;
+        vector(std::initializer_list<T> l);
+        vector(const vector<T>& sec);
+        ~vector();
 
         void resize(size_t new_elem_num);
         void resize(size_t new_elem_num, T value);
@@ -40,32 +40,32 @@ namespace MySTL {
         void push_back(T elem);
         void pop_back();
         void clear();
-        void erase(Vector<T>::iterator pos_begin, Vector<T>::iterator pos_end);
+        void erase(vector<T>::iterator pos_begin, vector<T>::iterator pos_end);
         
-        void insert(Vector<T>::iterator pos, T value);
-        void insert(Vector<T>::iterator pos, size_t ins_elem_num, T value);
-        void insert(Vector<T>::iterator pos, 
-            Vector<T>::iterator other_pos_begin, Vector<T>::iterator other_pos_end);
+        void insert(vector<T>::iterator pos, T value);
+        void insert(vector<T>::iterator pos, size_t ins_elem_num, T value);
+        void insert(vector<T>::iterator pos, 
+            vector<T>::iterator other_pos_begin, vector<T>::iterator other_pos_end);
 
         bool empty() const noexcept;
         size_t capacity() const noexcept;
         size_t size() const noexcept;
         T* data();
 
-        constexpr void swap(Vector<T>& _Right);
+        constexpr void swap(vector<T>& _Right);
 
         T& operator[](size_t index);
         const T& operator[](size_t index) const;
-        constexpr void operator=(const Vector<T>& vec);
-        constexpr void operator=(Vector<T>&& vec) noexcept;
-        bool operator==(const Vector<T>& vec);
-        bool operator!=(const Vector<T>& vec);
+        constexpr void operator=(const vector<T>& vec);
+        constexpr void operator=(vector<T>&& vec) noexcept;
+        bool operator==(const vector<T>& vec);
+        bool operator!=(const vector<T>& vec);
 
         constexpr void view();
     };
 
     template<typename T>
-    void Vector<T>::resize()
+    void vector<T>::resize()
     {
         /* The mode of vector resize:
          * if v.elements_num == capacity, new capacity = capacity + 128;
@@ -86,7 +86,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    bool operator==(const Vector<T>& _Left, const Vector<T>& _Right) 
+    bool operator==(const vector<T>& _Left, const vector<T>& _Right) 
     {
         if (_Left.size() != _Right.size()) {
             return false;
@@ -102,13 +102,13 @@ namespace MySTL {
     }
 
     template<typename T>
-    bool operator!=(const Vector<T>& _Left, const Vector<T>& _Right)
+    bool operator!=(const vector<T>& _Left, const vector<T>& _Right)
     {
         return !(_Left == _Right);
     }
 
     template<typename T>
-    T& Vector<T>::operator[](size_t index) 
+    T& vector<T>::operator[](size_t index) 
     {
         if (index < this->size()) {
             return this->_data[index];
@@ -119,7 +119,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    const T& Vector<T>::operator[](size_t index) const
+    const T& vector<T>::operator[](size_t index) const
     {
         if (index < this->size()) {
             return this->_data[index];
@@ -130,7 +130,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline constexpr void Vector<T>::operator=(const Vector<T>& vec)
+    inline constexpr void vector<T>::operator=(const vector<T>& vec)
     {
         this->elements_num = vec.elements_num;
         this->capacity_num = vec.capacity_num;
@@ -140,7 +140,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline constexpr void Vector<T>::operator=(Vector<T>&& vec) noexcept
+    inline constexpr void vector<T>::operator=(vector<T>&& vec) noexcept
     {
         this->_data = vec.data();
         this->elements_num = vec.size();
@@ -149,19 +149,19 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline bool Vector<T>::operator==(const Vector<T>& vec)
+    inline bool vector<T>::operator==(const vector<T>& vec)
     {
         return (*this == vec);
     }
 
     template<typename T>
-    inline bool Vector<T>::operator!=(const Vector<T>& vec)
+    inline bool vector<T>::operator!=(const vector<T>& vec)
     {
         return !(*this == vec);
     }
 
     template<typename T>
-    inline constexpr void Vector<T>::view()
+    inline constexpr void vector<T>::view()
     {
         for (int i = 0; i < this->size(); i++) {
             std::cout << this->_data[i] << " ";
@@ -170,14 +170,14 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::Vector() 
+    vector<T>::vector() 
     {
         this->capacity_num = 0;
         this->elements_num = 0;
     }
 
     template<typename T>
-    Vector<T>::Vector(size_t n) 
+    vector<T>::vector(size_t n) 
     {
         try {
             this->_data = new T[n];
@@ -193,7 +193,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::Vector(T* arr, size_t n)
+    vector<T>::vector(T* arr, size_t n)
     {
         this->_data = arr;
         this->capacity_num = n;
@@ -202,7 +202,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline Vector<T>::Vector(T* _begin, T* _end)
+    inline vector<T>::vector(T* _begin, T* _end)
     {
         if (_end >= _begin) {
             size_t length = _end - _begin + 1;
@@ -218,7 +218,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline Vector<T>::Vector(size_t _elem_num, T value)
+    inline vector<T>::vector(size_t _elem_num, T value)
     {
         this->capacity_num = _elem_num + 128;
         this->_data = new T[this->capacity_num];
@@ -229,7 +229,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::Vector(Vector<T>&& vec) noexcept 
+    vector<T>::vector(vector<T>&& vec) noexcept 
     {
         this->_data = vec.data();
         this->capacity_num = vec.capacity();
@@ -240,7 +240,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::Vector(std::initializer_list<T> l) 
+    vector<T>::vector(std::initializer_list<T> l) 
     {
         try {
             this->_data = new T[l.size() + 128];
@@ -256,7 +256,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::Vector(const Vector<T>& sec) 
+    vector<T>::vector(const vector<T>& sec) 
     {
         this->capacity_num = sec.capacity();
         this->elements_num = sec.size();
@@ -272,7 +272,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    Vector<T>::~Vector() 
+    vector<T>::~vector() 
     {
         delete[] this->_data;
         this->_data = nullptr;
@@ -281,7 +281,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline void Vector<T>::resize(size_t new_elem_num)
+    inline void vector<T>::resize(size_t new_elem_num)
     {
         if (new_elem_num <= this->capacity()) {
             this->elements_num = new_elem_num;
@@ -294,7 +294,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline void Vector<T>::resize(size_t new_elem_num, T value)
+    inline void vector<T>::resize(size_t new_elem_num, T value)
     {
         if (new_elem_num <= this->capacity()) {
             if (new_elem_num <= this->elements_num) {
@@ -316,32 +316,32 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline bool Vector<T>::empty() const noexcept
+    inline bool vector<T>::empty() const noexcept
     {
         if (this->elements_num == 0) return true;
         else return false;
     }
 
     template<typename T>
-    inline size_t Vector<T>::capacity() const noexcept
+    inline size_t vector<T>::capacity() const noexcept
     {
         return this->capacity_num;
     }
 
     template<typename T>
-    inline size_t Vector<T>::size() const noexcept
+    inline size_t vector<T>::size() const noexcept
     {
         return this->elements_num;
     }
 
     template<typename T>
-    inline T* Vector<T>::data()
+    inline T* vector<T>::data()
     {
         return this->_data;
     }
 
     template<typename T>
-    inline constexpr void Vector<T>::swap(Vector<T>& _Right)
+    inline constexpr void vector<T>::swap(vector<T>& _Right)
     {
         size_t temp_size{ _Right.size() }, temp_capacity{ _Right.capacity() };
         T* temp_data_ptr{ _Right.data() };
@@ -357,7 +357,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline void Vector<T>::reserve(size_t new_capacity)
+    inline void vector<T>::reserve(size_t new_capacity)
     {
         if (new_capacity != this->capacity()) {
             try {
@@ -380,31 +380,31 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline Vector<T>::iterator Vector<T>::begin()
+    inline vector<T>::iterator vector<T>::begin()
     {
         return this->_data;
     }
 
     template<typename T>
-    inline Vector<T>::iterator Vector<T>::end()
+    inline vector<T>::iterator vector<T>::end()
     {
         return this->_data + this->elements_num;
     }
 
     template<typename T>
-    inline Vector<T>::const_iterator Vector<T>::begin() const
+    inline vector<T>::const_iterator vector<T>::begin() const
     {
         return this->_data;
     }
 
     template<typename T>
-    inline Vector<T>::const_iterator Vector<T>::end() const
+    inline vector<T>::const_iterator vector<T>::end() const
     {
         return this->_data + this->elements_num;
     }
 
     template<typename T>
-    inline void Vector<T>::push_back(T elem)
+    inline void vector<T>::push_back(T elem)
     {
         this->resize();
         if (this->size() < this->capacity()) {
@@ -418,19 +418,19 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline void Vector<T>::pop_back()
+    inline void vector<T>::pop_back()
     {
         this->elements_num--;
     }
 
     template<typename T>
-    inline void Vector<T>::clear()
+    inline void vector<T>::clear()
     {
         this->elements_num = 0;
     }
 
     template<typename T>
-    inline void Vector<T>::erase(Vector<T>::iterator pos_begin, Vector<T>::iterator pos_end)
+    inline void vector<T>::erase(vector<T>::iterator pos_begin, vector<T>::iterator pos_end)
     {
         if (pos_begin <= pos_end) {
             if (pos_begin >= this->begin() && pos_begin <= this->end()) {
@@ -450,7 +450,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline void Vector<T>::insert(Vector<T>::iterator pos, T value)
+    inline void vector<T>::insert(vector<T>::iterator pos, T value)
     {
         if (pos >= this->begin() && pos <= this->end()) {
             size_t ins_pos_index = pos - this->begin();
@@ -473,7 +473,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline void Vector<T>::insert(Vector<T>::iterator pos, size_t ins_elem_num, T value)
+    inline void vector<T>::insert(vector<T>::iterator pos, size_t ins_elem_num, T value)
     {
         if (pos >= this->begin() && pos <= this->end()) {
             size_t ins_pos_index = pos - this->begin();
@@ -495,8 +495,8 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline void Vector<T>::insert(Vector<T>::iterator pos,
-        Vector<T>::iterator other_pos_begin, Vector<T>::iterator other_pos_end)
+    inline void vector<T>::insert(vector<T>::iterator pos,
+        vector<T>::iterator other_pos_begin, vector<T>::iterator other_pos_end)
     {
         if (pos >= this->begin() && pos <= this->end()) {
             size_t ins_pos_index = pos - this->begin();

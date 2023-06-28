@@ -1,15 +1,15 @@
 #pragma once
-#include "Vector.h"
+#include "vector.h"
 
 namespace MySTL
 {
 	template<typename T>
-	class Stack
+	class stack
 	{
 	private:
-		Vector<T> _data{};
+		vector<T> _data{};
 	public:
-		Stack() = default;
-		Stack()
+		stack() = default;
+		stack()
 	};
 }

@@ -1,16 +1,16 @@
 #pragma once
 #include <iostream>
-#include "../includes/String.h"
+#include "../includes/string.h"
 
 namespace StringTest
 {
 	void StringTest()
 	{
 		std::cout << "*-----Here are MySTL::String Test-----*" << std::endl;
-        MySTL::String s1{ "HEllo!" }, s3{ "World!" }, s0{ "你好，世界！" };
+        MySTL::string s1{ "HEllo!" }, s3{ "World!" }, s0{ "你好，世界！" };
         std::cout << "s0 : " << s0 << std::endl;
 
-        MySTL::String s2{ "HelloABABABBABC123HDJKAS, World!!" };
+        MySTL::string s2{ "HelloABABABBABC123HDJKAS, World!!" };
         std::cout << "s2 : " << s2 << std::endl;
         std::cout << "Find C12 in s2 from pos2 : " << s2.find("C12", 2) << std::endl;
         std::cout << "Find CBA in s2 : " << s2.find("CBA", 0) << std::endl;

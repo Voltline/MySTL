@@ -3,7 +3,7 @@
 namespace MySTL 
 {
 	template<typename T>
-	class Deque
+	class deque
 	{
 	private:
 		List _data{};

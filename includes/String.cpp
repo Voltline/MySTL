@@ -1,26 +1,26 @@
-#include "String.h"
+#include "string.h"
 #include "exceptions.h"
 
 namespace MySTL
 {
-	String::String()
+	string::string()
 	{
-		this->container = Vector<unsigned char>{};
+		this->container = vector<unsigned char>{};
 	}
 
-	String::String(const char* _c_str)
+	string::string(const char* _c_str)
 	{
 		size_t length{ strlen(_c_str) };
 		this->_size = length;
 		this->container =
-			Vector<unsigned char>{
+			vector<unsigned char>{
 				const_cast<unsigned char*>((unsigned char*)_c_str),
 				const_cast<unsigned char*>((unsigned char*)(_c_str + length))
 		};
 		this->container[_size] = '\0';
 	}
 
-	String::String(const char* _c_str, size_t _size)
+	string::string(const char* _c_str, size_t _size)
 	{
 		size_t length{ _size };
 		if (_size > strlen(_c_str)) {
@@ -29,14 +29,14 @@ namespace MySTL
 
 		this->_size = length;
 		this->container =
-			Vector<unsigned char>{
+			vector<unsigned char>{
 				const_cast<unsigned char*>((unsigned char*)_c_str),
 				const_cast<unsigned char*>((unsigned char*)(_c_str + length))
 		};
 		this->container[_size] = '\0';
 	}
 
-	String::String(const char* _c_str, size_t _begin, size_t _size)
+	string::string(const char* _c_str, size_t _begin, size_t _size)
 	{
 		size_t length{ _size };
 		if (_size > strlen(_c_str + _begin)) {
@@ -45,35 +45,35 @@ namespace MySTL
 
 		this->_size = length;
 		this->container =
-			Vector<unsigned char>{
+			vector<unsigned char>{
 				const_cast<unsigned char*>((unsigned char*)_c_str),
 				const_cast<unsigned char*>((unsigned char*)(_c_str + length))
 		};
 		this->container[_size] = '\0';
 	}
 
-	String::String(size_t _size, char c)
+	string::string(size_t _size, char c)
 	{
-		this->container = Vector<unsigned char>(_size, c);
+		this->container = vector<unsigned char>(_size, c);
 		this->_size = _size;
 	}
 
-	String::String(const String& _str)
+	string::string(const string& _str)
 	{
-		this->container = Vector<unsigned char>(_str.container);
+		this->container = vector<unsigned char>(_str.container);
 		this->_size = _str._size;
 	}
 
-	String::String(String&& _mv_str) noexcept
+	string::string(string&& _mv_str) noexcept
 	{
 		this->container = std::move(_mv_str.container);
 		this->_size = _mv_str._size;
-		_mv_str.container = Vector<unsigned char>{};
+		_mv_str.container = vector<unsigned char>{};
 	}
 
-	String::String(std::initializer_list<char> l)
+	string::string(std::initializer_list<char> l)
 	{
-		this->container = Vector<unsigned char>(l.size() + 128);
+		this->container = vector<unsigned char>(l.size() + 128);
 		this->_size = l.size();
 		for (auto it = l.begin(); it != l.end(); it++) {
 			this->container.push_back(static_cast<unsigned char>(*it));
@@ -81,48 +81,60 @@ namespace MySTL
 		this->container.push_back('\0');
 	}
 
-	String::~String()
+	string::~string()
 	{
 		this->_size = 0;
-		this->container.~Vector();
+		this->container.~vector();
 	}
 
-	void String::operator=(const String& _Right)
+	string& string::operator=(const string& _Right)
 	{
-		this->container.~Vector();
+		this->container.~vector();
 		this->container = _Right.container;
+		this->_size = _Right._size;
+		return *this;
 	}
 
-	void String::operator=(const char* _str)
+	string& string::operator=(string&& _Right) noexcept
 	{
-		this->container.~Vector();
+		this->container.~vector();
+		this->container = std::move(_Right.container);
+		this->_size = _Right._size;
+		return *this;
+	}
+
+	string& string::operator=(const char* _str)
+	{
+		this->container.~vector();
 		size_t length{ strlen(_str) };
-		this->container = Vector<unsigned char>(length + 128);
+		this->container = vector<unsigned char>(length + 128);
 		this->_size = 0;
 		for (size_t i = 0; i < length; i++) {
 			this->container.push_back(_str[i]);
 			this->_size++;
 		}
+		return *this;
 	}
 
-	void String::operator=(char c)
+	string& string::operator=(char c)
 	{
 		this->clear();
 		this->push_back(c);
+		return *this;
 	}
 
-	String String::operator+(const String& _Right)
+	string string::operator+(const string& _Right)
 	{
-		String temp{ *this };
+		string temp{ *this };
 		for (auto& i : _Right) {
 			temp.push_back(i);
 		}
 		return temp;
 	}
 
-	String String::operator+(const char* _str)
+	string string::operator+(const char* _str)
 	{
-		String temp{ *this };
+		string temp{ *this };
 		size_t length{ strlen(_str) };
 		for (size_t i = 0; i < length; i++) {
 			temp.push_back(_str[i]);
@@ -130,21 +142,21 @@ namespace MySTL
 		return temp;
 	}
 
-	String String::operator+(char c)
+	string string::operator+(char c)
 	{
-		String temp{ *this };
+		string temp{ *this };
 		temp.push_back(c);
 		return temp;
 	}
 
-	void String::operator+=(const String& _Right)
+	void string::operator+=(const string& _Right)
 	{
 		for (auto& i : _Right) {
 			this->push_back(i);
 		}
 	}
 
-	void String::operator+=(const char* _str)
+	void string::operator+=(const char* _str)
 	{
 		size_t length{ strlen(_str) };
 		for (size_t i = 0; i < length; i++) {
@@ -152,22 +164,22 @@ namespace MySTL
 		}
 	}
 
-	void String::operator+=(char c)
+	void string::operator+=(char c)
 	{
 		this->push_back(c);
 	}
 
-	unsigned char& String::operator[](size_t _index)
+	unsigned char& string::operator[](size_t _index)
 	{
 		return this->container[_index];
 	}
 
-	const unsigned char& String::operator[](size_t _index) const
+	const unsigned char& string::operator[](size_t _index) const
 	{
 		return this->container[_index];
 	}
 
-	unsigned char& String::at(size_t _index)
+	unsigned char& string::at(size_t _index)
 	{
 		if (_index <= this->_size) {
 			return this->container[_index];
@@ -177,7 +189,7 @@ namespace MySTL
 		}
 	}
 
-	bool String::operator==(const String& _Right)
+	bool string::operator==(const string& _Right)
 	{
 		if (this->_size != _Right._size) {
 			return false;
@@ -190,12 +202,12 @@ namespace MySTL
 		}
 	}
 
-	bool String::operator!=(const String& _Right)
+	bool string::operator!=(const string& _Right)
 	{
 		return !(*this == _Right);
 	}
 
-	bool String::operator>(const String& _Right)
+	bool string::operator>(const string& _Right)
 	{
 		size_t min_size{ this->_size < _Right.size() ? this->_size : _Right.size() };
 		for (size_t i = 0; i < min_size; i++) {
@@ -207,22 +219,22 @@ namespace MySTL
 		return this->_size > _Right.size();
 	}
 
-	bool String::operator<(const String& _Right)
+	bool string::operator<(const string& _Right)
 	{
 		return (*this <= _Right) && (*this != _Right);
 	}
 
-	bool String::operator>=(const String& _Right)
+	bool string::operator>=(const string& _Right)
 	{
 		return (*this > _Right) || (*this == _Right);
 	}
 
-	bool String::operator<=(const String& _Right)
+	bool string::operator<=(const string& _Right)
 	{
 		return !(*this > _Right);
 	}
 
-	bool String::operator==(const char* _c_Right)
+	bool string::operator==(const char* _c_Right)
 	{
 		if (strlen(_c_Right) != this->_size) return false;
 		else {
@@ -234,12 +246,12 @@ namespace MySTL
 		}
 	}
 
-	bool String::operator!=(const char* _c_Right)
+	bool string::operator!=(const char* _c_Right)
 	{
 		return !(*this == _c_Right);
 	}
 
-	bool String::operator>(const char* _c_Right)
+	bool string::operator>(const char* _c_Right)
 	{
 		size_t length{ strlen(_c_Right) };
 		size_t min_size{ this->_size < length ? this->_size : length };
@@ -252,86 +264,86 @@ namespace MySTL
 		return this->_size > length;
 	}
 
-	bool String::operator<(const char* _c_Right)
+	bool string::operator<(const char* _c_Right)
 	{
 		return (*this <= _c_Right) && (*this != _c_Right);
 	}
 
-	bool String::operator>=(const char* _c_Right)
+	bool string::operator>=(const char* _c_Right)
 	{
 		return (*this > _c_Right) || (*this == _c_Right);
 	}
 
-	bool String::operator<=(const char* _c_Right)
+	bool string::operator<=(const char* _c_Right)
 	{
 		return !(*this > _c_Right);
 	}
 
 
-	size_t String::size() const noexcept
+	size_t string::size() const noexcept
 	{
 		return this->_size;
 	}
 
-	size_t String::capacity() const noexcept
+	size_t string::capacity() const noexcept
 	{
 		return this->container.capacity();
 	}
 
-	bool String::empty() const noexcept
+	bool string::empty() const noexcept
 	{
 		if (this->_size != 0) return false;
 		else return true;
 	}
 
-	const unsigned char* String::data()
+	const unsigned char* string::data()
 	{
 		return this->container.data();
 	}
 
-	const unsigned char* String::c_str()
+	const unsigned char* string::c_str()
 	{
 		return this->container.data();
 	}
 
-	String::iterator String::begin()
+	string::iterator string::begin()
 	{
 		return this->container.begin();
 	}
 
-	String::iterator String::end()
+	string::iterator string::end()
 	{
 		return this->container.begin() + this->_size;
 	}
 
-	String::const_iterator String::begin() const
+	string::const_iterator string::begin() const
 	{
 		return this->container.begin();
 	}
 
-	String::const_iterator String::end() const
+	string::const_iterator string::end() const
 	{
 		return this->container.begin() + this->_size;
 	}
 
-	void String::reserve(size_t new_capacity_size)
+	void string::reserve(size_t new_capacity_size)
 	{
 		this->container.reserve(new_capacity_size);
 	}
 
-	void String::resize(size_t new_elem_size)
+	void string::resize(size_t new_elem_size)
 	{
 		this->container.resize(new_elem_size);
 		this->_size = new_elem_size;
 	}
 
-	void String::clear()
+	void string::clear()
 	{
 		this->_size = 0;
 		this->container.clear();
 	}
 
-	void String::erase(const size_t _Where)
+	void string::erase(const size_t _Where)
 	{
 		if (_Where <= this->_size) {
 			this->_size = _Where;
@@ -340,7 +352,7 @@ namespace MySTL
 		}
 	}
 
-	void String::erase(const size_t _Off, const size_t _Count)
+	void string::erase(const size_t _Off, const size_t _Count)
 	{
 		if (_Off <= this->_size) {
 			if (this->_size - _Off > _Count) {
@@ -354,7 +366,7 @@ namespace MySTL
 		}
 	}
 
-	void String::erase(iterator _begin, iterator _end)
+	void string::erase(iterator _begin, iterator _end)
 	{
 		if (_end >= _begin) {
 			if (_begin >= this->begin()) {
@@ -380,7 +392,7 @@ namespace MySTL
 		}
 	}
 
-	void String::erase(iterator _pos)
+	void string::erase(iterator _pos)
 	{
 		if (_pos >= this->begin()) {
 			if (_pos < this->end()) {
@@ -396,19 +408,19 @@ namespace MySTL
 		}
 	}
 
-	void String::append(size_t _Count, char c)
+	void string::append(size_t _Count, char c)
 	{
 		for (size_t i = 0; i < _Count; i++) {
 			this->push_back(c);
 		}
 	}
 
-	void String::append(const String& _str)
+	void string::append(const string& _str)
 	{
 		*this += _str;
 	}
 
-	void String::append(const String& _str, size_t _Begin)
+	void string::append(const string& _str, size_t _Begin)
 	{
 		if (_Begin <= _str.size()) {
 			if (_Begin == 0) {
@@ -425,7 +437,7 @@ namespace MySTL
 		}
 	}
 
-	void String::append(const String& _str, size_t _Begin, size_t _Count)
+	void string::append(const string& _str, size_t _Begin, size_t _Count)
 	{
 		if (_Begin <= _str.size()) {
 			if (_Begin + _Count > _str.size()) {
@@ -440,12 +452,12 @@ namespace MySTL
 		}
 	}
 
-	void String::append(const char* _str)
+	void string::append(const char* _str)
 	{
 		*this += _str;
 	}
 
-	void String::append(const char* _str, size_t _Begin)
+	void string::append(const char* _str, size_t _Begin)
 	{
 		if (_Begin <= strlen(_str)) {
 			*this += (_str + _Begin);
@@ -455,7 +467,7 @@ namespace MySTL
 		}
 	}
 
-	void String::append(const char* _str, size_t _Begin, size_t _Count)
+	void string::append(const char* _str, size_t _Begin, size_t _Count)
 	{
 		if (_Begin <= strlen(_str)) {
 			if (strlen(_str) - _Begin < _Count) {
@@ -472,14 +484,14 @@ namespace MySTL
 		}
 	}
 
-	void String::append(std::initializer_list<char> l)
+	void string::append(std::initializer_list<char> l)
 	{
 		for (auto& i : l) {
 			this->push_back(i);
 		}
 	}
 
-	void String::push_back(char c)
+	void string::push_back(char c)
 	{
 		if (this->_size == this->container.size()) {
 			this->container.push_back(c);
@@ -491,7 +503,7 @@ namespace MySTL
 		this->_size++;
 	}
 
-	size_t String::find(char c, size_t _begin_pos)
+	size_t string::find(char c, size_t _begin_pos)
 	{
 		for (size_t i = _begin_pos; i < this->_size; i++) {
 			if (this->container[i] == c) {
@@ -501,7 +513,7 @@ namespace MySTL
 		return -1;
 	}
 
-	size_t String::find(const char* _str, size_t _begin_pos)
+	size_t string::find(const char* _str, size_t _begin_pos)
 	{
 		size_t length{ strlen(_str) };
 		bool isFind{ true };
@@ -529,7 +541,7 @@ namespace MySTL
 		}
 	}
 
-	size_t String::find(const String& _str, size_t _begin_pos)
+	size_t string::find(const string& _str, size_t _begin_pos)
 	{
 		size_t length{ _str.size()};
 		bool isFind{ true };
@@ -556,9 +568,9 @@ namespace MySTL
 			return -1;
 		}
 	}
-	void String::swap(String& _Right)
+	void string::swap(string& _Right)
 	{
-		String temp{ _Right };
+		string temp{ _Right };
 		_Right.clear();
 		for (auto& c : *this) {
 			_Right.push_back(c);
@@ -569,36 +581,36 @@ namespace MySTL
 		}
 	}
 
-	bool operator==(const char* _Left, String _Right)
+	bool operator==(const char* _Left, string _Right)
 	{
 		return _Right == _Left;
 	}
 
-	bool operator!=(const char* _Left, String _Right)
+	bool operator!=(const char* _Left, string _Right)
 	{
 		return _Right != _Left;
 	}
 
-	bool operator>(const char* _Left, String _Right)
+	bool operator>(const char* _Left, string _Right)
 	{
 		return _Right < _Left;
 	}
 
-	bool operator<(const char* _Left, String _Right)
+	bool operator<(const char* _Left, string _Right)
 	{
 		return _Right > _Left;
 	}
 
-	bool operator>=(const char* _Left, String _Right)
+	bool operator>=(const char* _Left, string _Right)
 	{
 		return _Right <= _Left;
 	}
-	bool operator<=(const char* _Left, String _Right)
+	bool operator<=(const char* _Left, string _Right)
 	{
 		return _Right >= _Left;
 	}
 
-	std::istream& getline(std::istream& input, String& _Target, const char _End)
+	std::istream& getline(std::istream& input, string& _Target, const char _End)
 	{
 		_Target.clear();
 		unsigned char c = input.get();

@@ -191,7 +191,7 @@ namespace MySTL
 	}
 
 	template<typename T>
-	class List
+	class list
 	{
 	private:
 		Node<T>* _head{ nullptr };
@@ -202,11 +202,11 @@ namespace MySTL
 		using iterator = Iterator<T>;
 		using const_iterator = const Iterator<T>;
 	public:
-		List() = default;
-		List(std::initializer_list<T> l);
-		List(const List<T>& _Right);
-		List(List<T>&& _mv_Right) noexcept;
-		~List();
+		list() = default;
+		list(std::initializer_list<T> l);
+		list(const list<T>& _Right);
+		list(list<T>&& _mv_Right) noexcept;
+		~list();
 
 		iterator begin()
 		{
@@ -236,19 +236,19 @@ namespace MySTL
 		void pop_front();
 		void clear();
 
-		void erase(List<T>::const_iterator _Where);
-		void erase(List<T>::const_iterator _First, List<T>::const_iterator _Last);
+		void erase(list<T>::const_iterator _Where);
+		void erase(list<T>::const_iterator _First, list<T>::const_iterator _Last);
 
 		T& front();
 		T& back();
 
-		void operator=(const List<T>& _Right);
+		void operator=(const list<T>& _Right);
 		void view();
 		const size_t size();
 	};
 
 	template<typename T>
-	inline List<T>::List(std::initializer_list<T> l)
+	inline list<T>::list(std::initializer_list<T> l)
 	{
 		size_t length{ l.size() };
 		if (length == 1) {
@@ -279,7 +279,7 @@ namespace MySTL
 	}
 
 	template<typename T>
-	inline List<T>::List(const List<T>& _Right)
+	inline list<T>::list(const list<T>& _Right)
 	{
 		size_t length = _Right._size;
 		if (_Right._size == 1) {
@@ -310,7 +310,7 @@ namespace MySTL
 	}
 	
 	template<typename T>
-	inline List<T>::List(List<T>&& _mv_Right) noexcept
+	inline list<T>::list(list<T>&& _mv_Right) noexcept
 	{
 		this->_head = _mv_Right._head;
 		this->_tail = _mv_Right._tail;
@@ -324,7 +324,7 @@ namespace MySTL
 	}
 
 	template<typename T>
-	inline List<T>::~List()
+	inline list<T>::~list()
 	{
 		Node<T>* _node_ptr{ this->_head }, * _temp_ptr{ nullptr };
 		while (_node_ptr != this->_end) {
@@ -340,7 +340,7 @@ namespace MySTL
 	}
 
 	template<typename T>
-	inline void List<T>::push_back(T value)
+	inline void list<T>::push_back(T value)
 	{
 		if (this->_size == 1) {
 			this->_tail = new Node<T>{ value };
@@ -365,7 +365,7 @@ namespace MySTL
 	}
 	
 	template<typename T>
-	inline void List<T>::push_front(T value)
+	inline void list<T>::push_front(T value)
 	{
 		Node<T>* temp_node_ptr = new Node<T>{ value };
 		if (this->_size == 1) {
@@ -384,7 +384,7 @@ namespace MySTL
 	}
 	
 	template<typename T>
-	void List<T>::pop_back()
+	void list<T>::pop_back()
 	{
 		/*
 		if (this->_size != 1) {
@@ -403,38 +403,38 @@ namespace MySTL
 	}
 	
 	template<typename T>
-	inline void List<T>::pop_front()
+	inline void list<T>::pop_front()
 	{
 
 	}
 	
 	template<typename T>
-	inline void List<T>::clear()
+	inline void list<T>::clear()
 	{
 
 	}
 
 	template<typename T>
-	inline T& List<T>::front()
+	inline T& list<T>::front()
 	{
 		return this->_head->value;
 	}
 
 	template<typename T>
-	inline T& List<T>::back()
+	inline T& list<T>::back()
 	{
 		return this->_tail->value;
 	}
 
 	template<typename T>
-	inline void List<T>::operator=(const List<T>& _Right)
+	inline void list<T>::operator=(const list<T>& _Right)
 	{
 		this->_head = _Right._head;
 		this->_tail = _Right._tail;
 	}
 
 	template<typename T>
-	inline void List<T>::view()
+	inline void list<T>::view()
 	{
 		for (auto& i : *this) {
 			std::cout << i << " ";
@@ -443,7 +443,7 @@ namespace MySTL
 	}
 
 	template<typename T>
-	inline const size_t List<T>::size()
+	inline const size_t list<T>::size()
 	{
 		return this->_size;
 	}

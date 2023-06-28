@@ -1,10 +1,10 @@
 #pragma once
-#include "List.h"
+#include "list.h"
 
 namespace MySTL
 {
 	template<typename T>
-	class Queue
+	class queue
 	{
 	private:
 		List _data{};

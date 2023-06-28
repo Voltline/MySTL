@@ -1,13 +1,13 @@
 #pragma once
 #include <iostream>
-#include "../includes/Array.h"
+#include "../includes/array.h"
 
 namespace ArrayTest
 {
 	void ArrayTest()
 	{
 		std::cout << "*-----Here are MySTL::Array<T, _Size> Test-----*" << std::endl;
-		MySTL::Array<int, 6> arr{ 3, 12, 2 };
+		MySTL::array<int, 6> arr{ 3, 12, 2 };
 		std::cout << "Initialize arr: ";
 		arr.view();
 		
