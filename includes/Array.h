@@ -9,7 +9,7 @@ namespace MySTL
 	class array
 	{
 	private:
-		T _data[_Size]{ 0 };
+		T _data[_Size];
 		size_t _size{ _Size };
 	public:
 		using iterator = T*;
@@ -52,13 +52,17 @@ namespace MySTL
 	template<typename T, size_t _Size>
 	array<T, _Size>::array(T _array[_Size])
 	{
-		memmove(this->_data, _array, _Size * sizeof(T));
+		for (size_t i = 0; i < _Size; i++) {
+			_data[i] = _array[i];
+		}
 	}
 
 	template<typename T, size_t _Size>
 	array<T, _Size>::array(const array<T, _Size>& _array)
 	{
-		memmove(this->_data, _array._data, _Size * sizeof(T));
+		for (size_t i = 0; i < _Size; i++) {
+			_data[i] = _array._data[i];
+		}
 	}
 
 	template<typename T, size_t _Size>
@@ -67,7 +71,7 @@ namespace MySTL
 		if (l.size() <= _Size) {
 			size_t i = 0;
 			for (auto it = l.begin(); it != l.end(); it++) {
-				this->_data[i++] = *it;
+				_data[i++] = *it;
 			}
 		}
 		else {
@@ -79,7 +83,7 @@ namespace MySTL
 	inline constexpr void array<T, _Size>::fill(const T& _value)
 	{
 		for (size_t i = 0; i < _Size; i++) {
-			this->_data[i] = _value;
+			_data[i] = _value;
 		}
 	}
 
@@ -88,70 +92,70 @@ namespace MySTL
 	{
 		for (size_t i = 0; i < _Size; i++) {
 			T temp{ _array[i] };
-			_array[i] = this->at(i);
-			this->_data[i] = temp;
+			_array[i] = at(i);
+			_data[i] = temp;
 		}
 	}
 
 	template<typename T, size_t _Size>
 	inline constexpr size_t array<T, _Size>::size() const
 	{
-		return this->_size;
+		return _size;
 	}
 
 	template<typename T, size_t _Size>
 	inline constexpr size_t array<T, _Size>::max_size() const
 	{
-		return this->_size;
+		return _size;
 	}
 
 	template<typename T, size_t _Size>
 	inline array<T, _Size>::iterator array<T, _Size>::begin()
 	{
-		return this->_data;
+		return _data;
 	}
 
 	template<typename T, size_t _Size>
 	inline array<T, _Size>::iterator array<T, _Size>::end()
 	{
-		return this->_data + this->_size;
+		return _data + _size;
 	}
 
 	template<typename T, size_t _Size>
 	inline array<T, _Size>::const_iterator array<T, _Size>::begin() const
 	{
-		return this->_data;
+		return _data;
 	}
 
 	template<typename T, size_t _Size>
 	inline array<T, _Size>::const_iterator array<T, _Size>::end() const
 	{
-		return this->_data + this->_size;
+		return _data + _size;
 	}
 
 	template<typename T, size_t _Size>
 	inline constexpr const T* array<T, _Size>::data() const noexcept
 	{
-		return this->_data;
+		return _data;
 	}
 
 	template<typename T, size_t _Size>
 	inline T& array<T, _Size>::operator[](size_t _index)
 	{
-		return this->_data[_index];
+		return _data[_index];
 	}
 
 	template<typename T, size_t _Size>
 	inline const T& array<T, _Size>::operator[](size_t _index) const
 	{
-		return this->_data[_index];
+		return _data[_index];
 	}
 
 	template<typename T, size_t _Size>
 	inline T& array<T, _Size>::at(size_t _index)
 	{
-		if (_index < this->_size) {
-			return this->_data[_index];
+		if (_index < _size) {
+			return _data[_index];
 		}
 		else {
 			throw std::out_of_range{ "Index Out of Range!" };
@@ -164,7 +168,7 @@ namespace MySTL
 		if (l.size() <= _Size) {
 			size_t i = 0;
 			for (auto it = l.begin(); it != l.end(); it++) {
-				this->_data[i++] = *it;
+				_data[i++] = *it;
 			}
 		}
 		else {
@@ -176,7 +180,7 @@ namespace MySTL
 	inline constexpr bool array<T, _Size>::operator==(array<T, _Size> _array)
 	{
 		for (size_t i = 0; i < _Size; i++) {
-			if (this->_data[i] != _array[i]) {
+			if (_data[i] != _array[i]) {
 				return false;
 			}
 		}
@@ -192,19 +196,19 @@ namespace MySTL
 	template<typename T, size_t _Size>
 	inline T& array<T, _Size>::front() noexcept
 	{
-		return this->_data[0];
+		return _data[0];
 	}
 
 	template<typename T, size_t _Size>
 	inline T& array<T, _Size>::back() noexcept
 	{
-		return this->_data[this->_size - 1];
+		return _data[_size - 1];
 	}
 
 	template<typename T, size_t _Size>
 	inline constexpr void array<T, _Size>::view()
 	{
-		for (auto& i : this->_data) {
+		for (auto& i : _data) {
 			std::cout << i << " ";
 		}
 		std::cout << std::endl;
@@ -238,7 +242,7 @@ namespace MySTL
 
 		const T* data() const noexcept { return nullptr; }
 
-		T& operator[](size_t _index) { return this->_data[_index]; }
+		T& operator[](size_t _index) { throw OutOfRangeException{}; }
 		T& at(size_t _index) { throw OutOfRangeException{}; }
 
 		void operator=(std::initializer_list<T> l) {}

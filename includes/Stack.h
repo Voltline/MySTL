@@ -7,7 +7,7 @@ namespace MySTL
 	class stack
 	{
 	private:
-		vector<T> _data{};
+		vector<T> _data;
 	public:
 		stack() = default;
 	};

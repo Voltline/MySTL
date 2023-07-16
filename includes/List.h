@@ -19,14 +19,14 @@ namespace MySTL
 	template<typename T>
 	inline Node<T>::Node(T value)
 	{
-		this->value = value;
+		value = value;
 	}
 
 	template<typename T>
 	inline Node<T>::~Node()
 	{
-		if (this->last != nullptr && this->next != nullptr) {
-			this->last->next = this->next;
+		if (last != nullptr && next != nullptr) {
+			last->next = next;
 		}
 	}
 
@@ -61,25 +61,25 @@ namespace MySTL
 	template<typename T>
 	inline Iterator<T>::Iterator(Node<T>& _node)
 	{
-		this->node_ptr = &(_node);
+		node_ptr = &(_node);
 	}
 
 	template<typename T>
 	inline Iterator<T>::Iterator(Node<T>* _node_ptr)
 	{
-		this->node_ptr = _node_ptr;
+		node_ptr = _node_ptr;
 	}
 
 	template<typename T>
 	inline T& Iterator<T>::operator*()
 	{
-		return this->node_ptr->value;
+		return node_ptr->value;
 	}
 
 	template<typename T>
 	inline T* Iterator<T>::operator->()
 	{
-		return &(this->node_ptr->value);
+		return &(node_ptr->value);
 	}
 
 	template<typename T>
@@ -124,7 +124,7 @@ namespace MySTL
 	template<typename T>
 	inline Iterator<T> Iterator<T>::operator++(int n) // a++
 	{
-		Node<T>* temp_ptr{ this->node_ptr };
+		Node<T>* temp_ptr{ node_ptr };
 		*this += 1;
 		return Iterator<T>(temp_ptr);
 	}
@@ -139,7 +139,7 @@ namespace MySTL
 	template<typename T>
 	inline Iterator<T> Iterator<T>::operator--(int n) // a--
 	{
-		Node<T>* temp_ptr{ this->node_ptr };
+		Node<T>* temp_ptr{ node_ptr };
 		*this -= 1;
 		return Iterator<T>(temp_ptr);
 	}
@@ -147,7 +147,7 @@ namespace MySTL
 	template<typename T>
 	inline bool Iterator<T>::operator==(Iterator<T> _Right)
 	{
-		if (this->node_ptr == _Right.node_ptr) return true;
+		if (node_ptr == _Right.node_ptr) return true;
 		else return false;
 	}
 	template<typename T>
@@ -159,18 +159,18 @@ namespace MySTL
 	template<typename T>
 	inline void Iterator<T>::operator=(const Iterator<T>& _Right)
 	{
-		this->node_ptr = _Right.node_ptr;
+		node_ptr = _Right.node_ptr;
 	}
 
 	template<typename T>
 	inline void Iterator<T>::operator+=(size_t _Off)
 	{
 		for (size_t i = 0; i < _Off; i++) {
-			if (this->node_ptr->next != nullptr) {
-				this->node_ptr = this->node_ptr->next;
+			if (node_ptr->next != nullptr) {
+				node_ptr = node_ptr->next;
 			}
 			else {
-				this->node_ptr = nullptr;
+				node_ptr = nullptr;
 				break;
 			}
 		}
@@ -180,11 +180,11 @@ namespace MySTL
 	inline void Iterator<T>::operator-=(size_t _Off)
 	{
 		for (size_t i = 0; i < _Off; i++) {
-			if (this->node_ptr->last != nullptr) {
-				this->node_ptr = this->node_ptr->last;
+			if (node_ptr->last != nullptr) {
+				node_ptr = node_ptr->last;
 			}
 			else {
-				this->node_ptr = nullptr;
+				node_ptr = nullptr;
 				break;
 			}
 		}
@@ -194,15 +194,15 @@ namespace MySTL
 	class list
 	{
 	private:
-		Node<T>* _head{ nullptr };
-		Node<T>* _tail{ nullptr };
-		Node<T>* _end{ nullptr };
-		size_t _size{ 0 };
+		Node<T>* _head;
+		Node<T>* _tail;
+		Node<T>* _end;
+		size_t _size;
 	public:
 		using iterator = Iterator<T>;
 		using const_iterator = const Iterator<T>;
 	public:
-		list() = default;
+		list() : _head(nullptr), _tail(nullptr), _end(nullptr), _size(0) {}
 		list(std::initializer_list<T> l);
 		list(const list<T>& _Right);
 		list(list<T>&& _mv_Right) noexcept;
@@ -210,22 +210,22 @@ namespace MySTL
 
 		iterator begin()
 		{
-			return Iterator<T>(this->_head);
+			return Iterator<T>(_head);
 		}
 
 		iterator end()
 		{
-			return Iterator<T>(this->_end);
+			return Iterator<T>(_end);
 		}
 
 		const_iterator begin() const
 		{
-			return Iterator(this->_head);
+			return Iterator(_head);
 		}
 
 		const_iterator end() const
 		{
-			return Iterator(this->_end);
+			return Iterator(_end);
 		}
 
 		void insert();
@@ -242,81 +242,89 @@ namespace MySTL
 		T& front();
 		T& back();
 
-		void operator=(const list<T>& _Right);
+		list<T>& operator=(const list<T>& _Right);
+		list<T>& operator=(list<T>&& _Right);
 		void view();
 		const size_t size();
 	};
 
 	template<typename T>
 	inline list<T>::list(std::initializer_list<T> l)
+		: _head(nullptr)
+		, _tail(nullptr)
+		, _end(nullptr)
+		, _size(0)
 	{
 		size_t length{ l.size() };
 		if (length == 1) {
-			this->_head = new Node<T>{ *l.begin() };
-			this->_tail = this->_head;
-			this->_size++;
+			_head = new Node<T>{ *l.begin() };
+			_tail = _head;
+			_size++;
 		}
 		else {
 			size_t i = 0;
 			for (auto& val : l) {
 				if (i == 0) {
-					this->_head = new Node<T>{ val };
-					this->_tail = this->_head;
+					_head = new Node<T>{ val };
+					_tail = _head;
 				}
 				else if (i < length) {
 					Node<T>* temp = new Node<T>{ val };
-					temp->last = this->_tail;
-					this->_tail->next = temp;
-					this->_tail = temp;
+					temp->last = _tail;
+					_tail->next = temp;
+					_tail = temp;
 				}
 				i++;
-				this->_size++;
+				_size++;
 			}
 		}
-		this->_end = new Node<T>{};
-		this->_end->last = this->_tail;
-		this->_tail->next = this->_end;
+		_end = new Node<T>{};
+		_end->last = _tail;
+		_tail->next = _end;
 	}
 
 	template<typename T>
 	inline list<T>::list(const list<T>& _Right)
+		: _head(nullptr)
+		, _tail(nullptr)
+		, _end(nullptr)
+		, _size(0)
 	{
 		size_t length = _Right._size;
 		if (_Right._size == 1) {
-			this->_head = new Node<T>{ *_Right._head };
-			this->_end = this->_head;
-			this->_size++;
+			_head = new Node<T>{ *_Right._head };
+			_end = _head;
+			_size++;
 		}
 		else {
 			size_t i = 0;
 			for (auto& val : _Right) {
 				if (i == 0) {
-					this->_head = new Node<T>{ val };
-					this->_tail = this->_head;
+					_head = new Node<T>{ val };
+					_tail = _head;
 				}
 				else if (i < length) {
 					Node<T>* temp = new Node<T>{ val };
-					temp->last = this->_tail;
-					this->_tail->next = temp;
-					this->_tail = temp;
+					temp->last = _tail;
+					_tail->next = temp;
+					_tail = temp;
 				}
 				i++;
-				this->_size++;
+				_size++;
 			}
 		}
-		this->_end = new Node<T>{};
-		this->_end->last = this->_tail;
-		this->_tail->next = this->_end;
+		_end = new Node<T>{};
+		_end->last = _tail;
+		_tail->next = _end;
 	}
 	
 	template<typename T>
 	inline list<T>::list(list<T>&& _mv_Right) noexcept
+		: _head(_mv_Right._head)
+		, _tail(_mv_Right._tail)
+		, _end(_mv_Right._end)
+		, _size(_mv_Right._size)
 	{
-		this->_head = _mv_Right._head;
-		this->_tail = _mv_Right._tail;
-		this->_end = _mv_Right._end;
-		this->_size = _mv_Right._size;
-
 		_mv_Right._head = nullptr;
 		_mv_Right._tail = nullptr;
 		_mv_Right._end = nullptr;
@@ -326,41 +334,41 @@ namespace MySTL
 	template<typename T>
 	inline list<T>::~list()
 	{
-		Node<T>* _node_ptr{ this->_head }, * _temp_ptr{ nullptr };
-		while (_node_ptr != this->_end) {
+		Node<T>* _node_ptr{ _head }, * _temp_ptr{ nullptr };
+		while (_node_ptr != _end) {
 			_temp_ptr = _node_ptr;
 			_node_ptr = _node_ptr->next;
 			delete _temp_ptr;
 		}
-		delete this->_end;
-		this->_head = nullptr;
-		this->_tail = nullptr;
-		this->_end = nullptr;
-		this->_size = 0;
+		delete _end;
+		_head = nullptr;
+		_tail = nullptr;
+		_end = nullptr;
+		_size = 0;
 	}
 
 	template<typename T>
 	inline void list<T>::push_back(T value)
 	{
-		if (this->_size == 1) {
-			this->_tail = new Node<T>{ value };
-			this->_head->next = this->_tail;
-			this->_tail->last = this->_head;
+		if (_size == 1) {
+			_tail = new Node<T>{ value };
+			_head->next = _tail;
+			_tail->last = _head;
 
-			this->_tail->next = this->_end;
-			this->_end->last = this->_tail;
-			this->_size++;
+			_tail->next = _end;
+			_end->last = _tail;
+			_size++;
 		}
 		else {
 			Node<T>* temp_node_ptr = new Node<T>{ value };
-			this->_tail->next = temp_node_ptr;
-			temp_node_ptr->last = this->_tail;
+			_tail->next = temp_node_ptr;
+			temp_node_ptr->last = _tail;
 			
-			this->_tail = temp_node_ptr;
-			this->_tail->next = this->_end;
-			this->_end->last = this->_tail;
+			_tail = temp_node_ptr;
+			_tail->next = _end;
+			_end->last = _tail;
 
-			this->_size++;
+			_size++;
 		}
 	}
 	
@@ -368,18 +376,18 @@ namespace MySTL
 	inline void list<T>::push_front(T value)
 	{
 		Node<T>* temp_node_ptr = new Node<T>{ value };
-		if (this->_size == 1) {
-			this->_head = temp_node_ptr;
-			this->_head->next = this->_tail;
-			this->_tail->last = this->_head;
-			this->_head->last = nullptr;
-			this->_size++;
+		if (_size == 1) {
+			_head = temp_node_ptr;
+			_head->next = _tail;
+			_tail->last = _head;
+			_head->last = nullptr;
+			_size++;
 		}
 		else {
-			temp_node_ptr->next = this->_head;
-			this->_head->last = temp_node_ptr;
-			this->_head = temp_node_ptr;
-			this->_size++;
+			temp_node_ptr->next = _head;
+			_head->last = temp_node_ptr;
+			_head = temp_node_ptr;
+			_size++;
 		}
 	}
 	
@@ -387,19 +395,19 @@ namespace MySTL
 	void list<T>::pop_back()
 	{
 		/*
-		if (this->_size != 1) {
-			Node<T>* temp = this->_tail;
-			this->_tail = this->_tail->last;
-			this->_tail->next = this->_end;
-			this->_end->last = this->_tail;
+		if (_size != 1) {
+			Node<T>* temp = _tail;
+			_tail = _tail->last;
+			_tail->next = _end;
+			_end->last = _tail;
 			temp->~Node();
 		}
 		else {
-			Node<T>* temp = this->_tail;
-			this->_
+			Node<T>* temp = _tail;
+			_
 		}
 
-		this->_size--;*/
+		_size--;*/
 	}
 	
 	template<typename T>
@@ -411,26 +419,49 @@ namespace MySTL
 	template<typename T>
 	inline void list<T>::clear()
 	{
-
+		Node<T>* _node_ptr{ _head }, * _temp_ptr{ nullptr };
+		while (_node_ptr != _end) {
+			_temp_ptr = _node_ptr;
+			_node_ptr = _node_ptr->next;
+			delete _temp_ptr;
+		}
+		delete _end;
+		_head = nullptr;
+		_tail = nullptr;
+		_end = nullptr;
+		_size = 0;
 	}
 
 	template<typename T>
 	inline T& list<T>::front()
 	{
-		return this->_head->value;
+		return _head->value;
 	}
 
 	template<typename T>
 	inline T& list<T>::back()
 	{
-		return this->_tail->value;
+		return _tail->value;
 	}
 
 	template<typename T>
-	inline void list<T>::operator=(const list<T>& _Right)
+	inline list<T>& list<T>::operator=(const list<T>& _Right)
 	{
-		this->_head = _Right._head;
-		this->_tail = _Right._tail;
+		clear();
+		for (auto it = _Right.begin(); it != _Right.end(); it++) {
+			push_back(*it);
+		}
+		return *this;
+	}
+
+	template<typename T>
+	inline list<T>& list<T>::operator=(list<T>&& _Right)
+	{
+		clear();
+		_head = _Right._head;
+		_tail = _Right._tail;
+		_size = _Right._size;
+		return *this;
 	}
 
 	template<typename T>
@@ -445,6 +476,6 @@ namespace MySTL
 	template<typename T>
 	inline const size_t list<T>::size()
 	{
-		return this->_size;
+		return _size;
 	}
 }
