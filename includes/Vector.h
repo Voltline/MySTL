@@ -11,8 +11,8 @@ namespace MySTL {
     {
     private:
         T* _data{ nullptr };
-        size_t capacity_num{0};
-        size_t elements_num{0};
+        size_t capacity_num;
+        size_t elements_num;
         void resize();
     public:
         using iterator = T*;  // Random Iterator
@@ -68,15 +68,17 @@ namespace MySTL {
     void vector<T>::resize()
     {
         /* The mode of vector resize:
-         * if v.elements_num == capacity, new capacity = capacity + 128;
+         * if v.elements_num == capacity, new capacity = capacity + 512;
          */
-        if (this->elements_num == this->capacity()) {
+        if (elements_num == capacity_num) {
             try {
-                T* temp = new T[this->capacity() + 128];
-                memmove(temp, this->_data, this->elements_num * sizeof(T));
-                delete[] this->_data;
-                this->_data = temp;
-                this->capacity_num = this->capacity() + 128;
+                T* temp = new T[capacity_num + 512];
+                for (size_t i = 0; i < elements_num; i++) {
+                    temp[i] = _data[i];
+                }
+                delete[] _data;
+                _data = temp;
+                capacity_num += 512;
                 temp = nullptr;
             }
             catch (std::bad_alloc& e) {
@@ -88,11 +90,11 @@ namespace MySTL {
     template<typename T>
     bool operator==(const vector<T>& _Left, const vector<T>& _Right) 
     {
-        if (_Left.size() != _Right.size()) {
+        if (_Left.elements_num != _Right.elements_num) {
             return false;
         }
         else {
-            for (size_t i = 0; i < _Left.size(); i++) {
+            for (size_t i = 0; i < _Left.elements_num; i++) {
                 if (_Left[i] != _Right[i]) {
                     return false;
                 }
@@ -110,8 +112,8 @@ namespace MySTL {
     template<typename T>
     T& vector<T>::operator[](size_t index) 
     {
-        if (index < this->size()) {
-            return this->_data[index];
+        if (index < elements_num) {
+            return _data[index];
         }
         else {
             throw std::out_of_range("Out of Range!");
@@ -121,8 +123,8 @@ namespace MySTL {
     template<typename T>
     const T& vector<T>::operator[](size_t index) const
     {
-        if (index < this->size()) {
-            return this->_data[index];
+        if (index < elements_num) {
+            return _data[index];
         }
         else {
             throw std::out_of_range("Out of Range!");
@@ -132,19 +134,21 @@ namespace MySTL {
     template<typename T>
     inline constexpr void vector<T>::operator=(const vector<T>& vec)
     {
-        this->elements_num = vec.elements_num;
-        this->capacity_num = vec.capacity_num;
-        delete[] this->_data;
-        this->_data = new T[this->capacity_num];
-        memmove(this->_data, vec._data, this->elements_num * sizeof(T));
+        elements_num = vec.elements_num;
+        capacity_num = vec.capacity_num;
+        delete[] _data;
+        _data = new T[capacity_num];
+        for (size_t i = 0; i < elements_num; i++) {
+            _data[i] = vec._data[i];
+        }
     }
 
     template<typename T>
     inline constexpr void vector<T>::operator=(vector<T>&& vec) noexcept
     {
-        this->_data = vec.data();
-        this->elements_num = vec.size();
-        this->capacity_num = vec.capacity();
+        _data = vec._data;
+        elements_num = vec.elements_num;
+        capacity_num = vec.capacity_num;
         vec._data = nullptr;
     }
 
@@ -163,42 +167,28 @@ namespace MySTL {
     template<typename T>
     inline constexpr void vector<T>::view()
     {
-        for (int i = 0; i < this->size(); i++) {
-            std::cout << this->_data[i] << " ";
+        for (int i = 0; i < elements_num; i++) {
+            std::cout << _data[i] << " ";
         }
         std::cout << std::endl;
     }
 
     template<typename T>
-    vector<T>::vector() 
-    {
-        this->capacity_num = 0;
-        this->elements_num = 0;
-    }
+    vector<T>::vector()
+        : capacity_num(0), elements_num(0) {}
 
     template<typename T>
     vector<T>::vector(size_t n) 
-    {
-        try {
-            this->_data = new T[n];
-            this->capacity_num = n;
-            this->elements_num = 0;
-        }
-        catch (std::bad_alloc& e) {
-            std::cout << "Allocation Failed: " << e.what() << std::endl;
-            this->_data = new T[128];
-            this->capacity_num = 128;
-            this->elements_num = 0;
-        }
-    }
+        : _data(new T[n]), capacity_num(n), elements_num(0) {}
 
     template<typename T>
     vector<T>::vector(T* arr, size_t n)
+        : _data(new T[n]), capacity_num(n), elements_num(n)
     {
-        this->_data = arr;
-        this->capacity_num = n;
-        this->elements_num = n;
-        this->resize();
+        for (size_t i = 0; i < n; i++) {
+            _data[i] = arr[i];
+        }
+        resize();
     }
 
     template<typename T>
@@ -206,152 +196,141 @@ namespace MySTL {
     {
         if (_end >= _begin) {
             size_t length = _end - _begin + 1;
-            this->_data = new T[length + 128];
-            this->elements_num = length;
-            this->capacity_num = length + 128;
-            memmove(this->_data, _begin, length * sizeof(T));
+            _data = new T[length];
+            elements_num = length;
+            capacity_num = length;
+            for (size_t i = 0; i < length; i++) {
+                _data[i] = *(_begin + i);
+            }
+            resize();
         }
         else {
             throw std::logic_error("Iterator Range Error!");
         }
-
     }
 
     template<typename T>
     inline vector<T>::vector(size_t _elem_num, T value)
+        : _data(new T[_elem_num])
+        , capacity_num(_elem_num)
+        , elements_num(0)
     {
-        this->capacity_num = _elem_num + 128;
-        this->_data = new T[this->capacity_num];
-
-        for (; this->elements_num < _elem_num; this->elements_num++) {
-            this->_data[this->elements_num] = value;
+        for (; elements_num < _elem_num; elements_num++) {
+            _data[elements_num] = value;
         }
     }
 
     template<typename T>
     vector<T>::vector(vector<T>&& vec) noexcept 
+        : _data(vec._data)
+        , capacity_num(vec.capacity_num)
+        , elements_num(vec.elements_num)
     {
-        this->_data = vec.data();
-        this->capacity_num = vec.capacity();
-        this->elements_num = vec.size();
-        this->resize();
-
+        resize();
         vec._data = nullptr;
     }
 
     template<typename T>
     vector<T>::vector(std::initializer_list<T> l) 
+        : _data(new T[l.size()])
+        , elements_num(0)
+        , capacity_num(l.size())
     {
-        try {
-            this->_data = new T[l.size() + 128];
-            this->elements_num = 0;
-            this->capacity_num = l.size() + 128;
-            for (auto it = l.begin(); it != l.end(); it++) {
-                this->push_back(*it);
-            }
-        }
-        catch (std::bad_alloc& e) {
-            throw e;
+        for (auto it = l.begin(); it != l.end(); it++) {
+            push_back(*it);
         }
     }
 
     template<typename T>
     vector<T>::vector(const vector<T>& sec) 
+        : _data(new T[sec.capacity_num])
+        , capacity_num(sec.capacity_num)
+        , elements_num(sec.elements_num)
     {
-        this->capacity_num = sec.capacity();
-        this->elements_num = sec.size();
-        try {
-            this->_data = new T[this->capacity()];
-            for (int i = 0; i < this->size(); i++) {
-                this->_data[i] = sec[i];
-            }
-        }
-        catch (std::bad_alloc& e) {
-            throw e;
+        for (int i = 0; i < elements_num; i++) {
+            _data[i] = sec[i];
         }
     }
 
     template<typename T>
     vector<T>::~vector() 
     {
-        delete[] this->_data;
-        this->_data = nullptr;
-        this->capacity_num = 0;
-        this->elements_num = 0;
+        delete[] _data;
+        _data = nullptr;
     }
 
     template<typename T>
     inline void vector<T>::resize(size_t new_elem_num)
     {
-        if (new_elem_num <= this->capacity()) {
-            this->elements_num = new_elem_num;
+        if (new_elem_num <= capacity_num) {
+            elements_num = new_elem_num;
         }
         else {
-            this->reserve(new_elem_num + 128);
-            this->elements_num = new_elem_num;
+            reserve(new_elem_num + 128);
+            elements_num = new_elem_num;
         }
-        this->resize();
+        resize();
     }
 
     template<typename T>
     inline void vector<T>::resize(size_t new_elem_num, T value)
     {
-        if (new_elem_num <= this->capacity()) {
-            if (new_elem_num <= this->elements_num) {
-                this->elements_num = new_elem_num;
+        if (new_elem_num <= capacity()) {
+            if (new_elem_num <= elements_num) {
+                elements_num = new_elem_num;
             }
             else {
-                for (; this->elements_num < new_elem_num; this->elements_num++) {
-                    this->_data[this->elements_num] = value;
+                for (; elements_num < new_elem_num; elements_num++) {
+                    _data[elements_num] = value;
                 }
             }
         }
         else {
-            this->reserve(new_elem_num + 128);
-            for (; this->elements_num < new_elem_num; this->elements_num++) {
-                this->_data[this->elements_num] = value;
+            reserve(new_elem_num + 128);
+            for (; elements_num < new_elem_num; elements_num++) {
+                _data[elements_num] = value;
             }
         }
-        this->resize();
+        resize();
     }
 
     template<typename T>
     inline bool vector<T>::empty() const noexcept
     {
-        if (this->elements_num == 0) return true;
+        if (elements_num == 0) return true;
         else return false;
     }
 
     template<typename T>
     inline size_t vector<T>::capacity() const noexcept
     {
-        return this->capacity_num;
+        return capacity_num;
     }
 
     template<typename T>
     inline size_t vector<T>::size() const noexcept
     {
-        return this->elements_num;
+        return elements_num;
     }
 
     template<typename T>
     inline T* vector<T>::data()
     {
-        return this->_data;
+        return _data;
     }
 
     template<typename T>
     inline constexpr void vector<T>::swap(vector<T>& _Right)
     {
-        size_t temp_size{ _Right.size() }, temp_capacity{ _Right.capacity() };
-        T* temp_data_ptr{ _Right.data() };
-        _Right.elements_num = this->size();
-        _Right.capacity_num = this->capacity();
-        _Right._data = this->data();
+        size_t temp_size{ _Right.elements_num }, temp_capacity{ _Right.capacity_num };
+        T* temp_data_ptr{ _Right._data };
+        _Right.elements_num = elements_num;
+        _Right.capacity_num = capacity_num;
+        _Right._data = _data;
 
-        this->elements_num = temp_size;
-        this->capacity_num = temp_capacity;
-        this->_data = temp_data_ptr;
+        elements_num = temp_size;
+        capacity_num = temp_capacity;
+        _data = temp_data_ptr;
         
         temp_data_ptr = nullptr;
     }
@@ -359,18 +338,18 @@ namespace MySTL {
     template<typename T>
     inline void vector<T>::reserve(size_t new_capacity)
     {
-        if (new_capacity != this->capacity()) {
+        if (new_capacity != capacity_num) {
             try {
                 T* temp = new T[new_capacity];
-                size_t min_capacity{ (new_capacity > this->elements_num) ? this->elements_num : new_capacity };
-                memmove(temp, this->_data, min_capacity * sizeof(T));
-                delete[] this->_data;
-                this->_data = temp;
+                size_t min_capacity{ (new_capacity > elements_num) ? elements_num : new_capacity };
+                memmove(temp, _data, min_capacity * sizeof(T));
+                delete[] _data;
+                _data = temp;
                 temp = nullptr;
-                this->capacity_num = new_capacity;
-                if (this->elements_num > this->capacity()) {
-                    this->elements_num = this->capacity();
-                    this->resize();
+                capacity_num = new_capacity;
+                if (elements_num > capacity_num) {
+                    elements_num = capacity_num;
+                    resize();
                 }
             }
             catch (std::bad_alloc& e) {
@@ -382,35 +361,35 @@ namespace MySTL {
     template<typename T>
     inline vector<T>::iterator vector<T>::begin()
     {
-        return this->_data;
+        return _data;
     }
 
     template<typename T>
     inline vector<T>::iterator vector<T>::end()
     {
-        return this->_data + this->elements_num;
+        return _data + elements_num;
     }
 
     template<typename T>
     inline vector<T>::const_iterator vector<T>::begin() const
     {
-        return this->_data;
+        return _data;
     }
 
     template<typename T>
     inline vector<T>::const_iterator vector<T>::end() const
     {
-        return this->_data + this->elements_num;
+        return _data + elements_num;
     }
 
     template<typename T>
     inline void vector<T>::push_back(T elem)
     {
-        this->resize();
-        if (this->size() < this->capacity()) {
-            this->_data[this->size()] = elem;
-            this->elements_num++;
-            this->resize();
+        resize();
+        if (elements_num < capacity_num) {
+            _data[elements_num] = elem;
+            elements_num++;
+            resize();
         }
         else {
             throw std::out_of_range("Out of Range!");
@@ -420,25 +399,27 @@ namespace MySTL {
     template<typename T>
     inline void vector<T>::pop_back()
     {
-        this->elements_num--;
+        elements_num--;
     }
 
     template<typename T>
     inline void vector<T>::clear()
     {
-        this->elements_num = 0;
+        elements_num = 0;
     }
 
     template<typename T>
     inline void vector<T>::erase(vector<T>::iterator pos_begin, vector<T>::iterator pos_end)
     {
         if (pos_begin <= pos_end) {
-            if (pos_begin >= this->begin() && pos_begin <= this->end()) {
-                if (this->end() < pos_end) {
-                    pos_end = this->end();
+            if (pos_begin >= begin() && pos_begin <= end()) {
+                if (end() < pos_end) {
+                    pos_end = end();
                 }
-                memmove(pos_begin, pos_end, (this->end() - pos_end) * sizeof(T));
-                this->elements_num -= pos_end - pos_begin;
+                for (auto it = pos_begin; it != pos_end + 1; it++) { // TODO: check if it's right!
+                    *it = *(it + (pos_end - pos_begin));
+                }
+                elements_num -= pos_end - pos_begin;
             }
             else {
                 throw IteratorErrorException{};
@@ -452,20 +433,21 @@ namespace MySTL {
     template<typename T>
     inline void vector<T>::insert(vector<T>::iterator pos, T value)
     {
-        if (pos >= this->begin() && pos <= this->end()) {
-            size_t ins_pos_index = pos - this->begin();
-            size_t elem_after_insert_num = this->end() - pos;
-            if (this->capacity() - this->elements_num >= 1) {
-                memmove(pos + 1, pos, elem_after_insert_num * sizeof(T));
-                *pos = value;
+        if (pos >= begin() && pos <= end()) {
+            size_t ins_pos_index = pos - begin();
+            size_t elem_after_insert_num = end() - pos;
+
+            if (capacity_num < elements_num + 1) {
+                reserve(capacity_num + 10);
             }
-            else {
-                this->reserve(this->capacity() + 1);
-                pos = this->begin() + ins_pos_index;
-                memmove(pos + 1, pos, elem_after_insert_num * sizeof(T));
-                *pos = value;
+            pos = begin() + ins_pos_index;
+            size_t element_to_be_mv_length = end() - pos;
+            auto mv_ptr_pos{ end() - 1 };
+            for (size_t i = 0; i < element_to_be_mv_length; i++) {
+                *(mv_ptr_pos - i + 1) = *(mv_ptr_pos - i);
             }
-            this->elements_num++;
+            *pos = value;
+            elements_num++;
         }
         else {
             throw IteratorOutOfRangeException{};
@@ -475,19 +457,25 @@ namespace MySTL {
     template<typename T>
     inline void vector<T>::insert(vector<T>::iterator pos, size_t ins_elem_num, T value)
     {
-        if (pos >= this->begin() && pos <= this->end()) {
-            size_t ins_pos_index = pos - this->begin();
-            size_t copy_num = this->end() - pos;
-            if (ins_elem_num + this->size() > this->capacity()) {
-                this->reserve(ins_elem_num + this->size() + 128);
-                pos = this->begin() + ins_pos_index;
+        if (pos >= begin() && pos <= end()) {
+            size_t ins_pos_index = pos - begin();
+            size_t copy_num = end() - pos;
+            if (ins_elem_num + elements_num > capacity_num) {
+                reserve(ins_elem_num + elements_num + 128);
+                pos = begin() + ins_pos_index;
             }
-            memmove(pos + ins_elem_num, pos, copy_num * sizeof(T));
-            size_t index = pos - this->begin();
+
+            size_t element_to_be_mv_length = end() - pos;
+
+            auto mv_ptr_pos{ end() - 1 };
+            for (size_t i = 0; i < element_to_be_mv_length; i++) {
+                *(mv_ptr_pos - i + ins_elem_num) = *(mv_ptr_pos - i);
+            }
+            elements_num += ins_elem_num;
+            size_t index = pos - begin();
             for (size_t i = 0; i < ins_elem_num; i++) {
-                this->_data[index + i] = value;
+                _data[index + i] = value;
             }
-            this->elements_num += ins_elem_num;
         }
         else {
             throw IteratorOutOfRangeException{};
@@ -498,19 +486,26 @@ namespace MySTL {
     inline void vector<T>::insert(vector<T>::iterator pos,
         vector<T>::iterator other_pos_begin, vector<T>::iterator other_pos_end)
     {
-        if (pos >= this->begin() && pos <= this->end()) {
-            size_t ins_pos_index = pos - this->begin();
-            size_t copy_num = this->end() - pos, ins_elem_num = other_pos_end - other_pos_begin;
-            if (ins_elem_num + this->size() > this->capacity()) {
-                this->reserve(ins_elem_num + this->size() + 128);
-                pos = this->begin() + ins_pos_index;
+        if (pos >= begin() && pos <= end()) {
+            size_t ins_pos_index = pos - begin();
+            size_t copy_num = end() - pos, ins_elem_num = other_pos_end - other_pos_begin;
+            if (ins_elem_num + elements_num > capacity_num) {
+                reserve(ins_elem_num + elements_num + 128);
+                pos = begin() + ins_pos_index;
             }
-            memmove(pos + ins_elem_num, pos, copy_num * sizeof(T));
-            size_t index = pos - this->begin();
+
+            size_t element_to_be_mv_length = end() - pos;
+
+            auto mv_ptr_pos{ end() - 1 };
+            for (size_t i = 0; i < element_to_be_mv_length; i++) {
+                *(mv_ptr_pos - i + ins_elem_num) = *(mv_ptr_pos - i);
+            }
+            elements_num += ins_elem_num;
+
+            size_t index = pos - begin();
             for (size_t i = 0; i < ins_elem_num; i++) {
-                this->_data[index + i] = *(other_pos_begin + i);
+                _data[index + i] = *(other_pos_begin + i);
             }
-            this->elements_num += ins_elem_num;
         }
         else {
             throw IteratorOutOfRangeException{};

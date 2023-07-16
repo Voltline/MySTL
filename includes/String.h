@@ -14,6 +14,7 @@ namespace MySTL
 	public:
 		using iterator = T*;
 		using const_iterator = const T*;
+		inline static size_t npos = -1;
 	public:
 		basic_string();
 		basic_string(const char* _c_str);
@@ -90,7 +91,8 @@ namespace MySTL
 
 		void swap(basic_string<T>& _Right);
 
-		friend std::ostream& operator<<(std::ostream& output, const basic_string<T>& _str)
+		template<typename U>
+		friend std::ostream& operator<<(std::ostream& output, const basic_string<U>& _str)
 		{
 			for (auto& i : _str) {
 				output << i;
@@ -98,10 +100,11 @@ namespace MySTL
 			return output;
 		}
 
-		friend std::istream& operator>>(std::istream& input, basic_string<T>& _str)
+		template<typename U>
+		friend std::istream& operator>>(std::istream& input, basic_string<U>& _str)
 		{
 			_str.clear();
-			unsigned char c = input.get();
+			U c = input.get();
 			while (c != ' ' && c != '\n' && c != '\t') {
 				_str.push_back(c);
 				c = input.get();
@@ -113,19 +116,19 @@ namespace MySTL
 	template<typename T>
 	basic_string<T>::basic_string()
 	{
-		this->container = vector<unsigned char>{};
+		container = vector<unsigned char>{};
 	}
 
 	template<typename T>
 	basic_string<T>::basic_string(const char* _c_str)
 	{
 		size_t length{ strlen(_c_str) };
-		this->_size = length;
-		this->container = vector<T>();
+		_size = length;
+		container = vector<T>();
 		for (size_t i = 0; i < length; i++) {
-			this->container.push_back(*(_c_str + i));
+			container.push_back(*(_c_str + i));
 		}
-		this->container.push_back('\0');
+		container.push_back('\0');
 	}
 
 	template<typename T>
@@ -136,21 +139,21 @@ namespace MySTL
 			length = strlen(_c_str);
 		}
 
-		this->_size = length;
-		this->container = vector<T>();
+		_size = length;
+		container = vector<T>();
 		for (size_t i = 0; i < length; i++) {
-			this->container.push_back(*(_c_str + i));
+			container.push_back(*(_c_str + i));
 		}
-		this->container.push_back('\0');
+		container.push_back('\0');
 	}
 
 	template<typename T>
 	basic_string<T>::basic_string(const char* _c_str, size_t _begin, size_t _size)
 	{
 		size_t c_str_len{ strlen(_c_str) };
-		this->container = vector<T>();
+		container = vector<T>();
 		if (_begin > c_str_len) {
-			this->_size = 0;
+			_size = 0;
 		}
 		else {
 			size_t length{ _size };
@@ -158,82 +161,82 @@ namespace MySTL
 				length = strlen(_c_str + _begin);
 			}
 
-			this->_size = length;
+			_size = length;
 			for (size_t i = _begin; i < length; i++) {
-				this->container.push_back(*(_c_str + i));
+				container.push_back(*(_c_str + i));
 			}
-			this->container.push_back('\0');
+			container.push_back('\0');
 		}
 	}
 
 	template<typename T>
 	basic_string<T>::basic_string(size_t _size, char c)
 	{
-		this->container = vector<T>(_size, c);
-		this->_size = _size;
+		container = vector<T>(_size, c);
+		_size = _size;
 	}
 
 	template<typename T>
 	basic_string<T>::basic_string(const basic_string<T>& _str)
 	{
-		this->container = vector<T>(_str.container);
-		this->_size = _str._size;
+		container = vector<T>(_str.container);
+		_size = _str._size;
 	}
 
 	template<typename T>
 	basic_string<T>::basic_string(basic_string<T>&& _mv_str) noexcept
 	{
-		this->container = std::move(_mv_str.container);
-		this->_size = _mv_str._size;
+		container = std::move(_mv_str.container);
+		_size = _mv_str._size;
 		_mv_str.container = vector<T>{};
 	}
 
 	template<typename T>
 	basic_string<T>::basic_string(std::initializer_list<T> l)
 	{
-		this->container = vector<T>(l.size() + 128);
-		this->_size = l.size();
+		container = vector<T>(l.size() + 128);
+		_size = l.size();
 		for (auto it = l.begin(); it != l.end(); it++) {
-			this->container.push_back(static_cast<T>(*it));
+			container.push_back(static_cast<T>(*it));
 		}
-		this->container.push_back('\0');
+		container.push_back('\0');
 	}
 
 	template<typename T>
 	basic_string<T>::~basic_string()
 	{
-		this->_size = 0;
-		this->container.~vector();
+		_size = 0;
+		container.~vector();
 	}
 
 	template<typename T>
 	basic_string<T>& basic_string<T>::operator=(const basic_string<T>& _Right)
 	{
-		this->container.~vector();
-		this->container = _Right.container;
-		this->_size = _Right._size;
+		container.~vector();
+		container = _Right.container;
+		_size = _Right._size;
 		return *this;
 	}
 
 	template<typename T>
 	basic_string<T>& basic_string<T>::operator=(basic_string<T>&& _Right) noexcept
 	{
-		this->container.~vector();
-		this->container = std::move(_Right.container);
-		this->_size = _Right._size;
+		container.~vector();
+		container = std::move(_Right.container);
+		_size = _Right._size;
 		return *this;
 	}
 
 	template<typename T>
 	basic_string<T>& basic_string<T>::operator=(const char* _str)
 	{
-		this->container.~vector();
+		container.~vector();
 		size_t length{ strlen(_str) };
-		this->container = vector<T>(length + 128);
-		this->_size = 0;
+		container = vector<T>(length + 128);
+		_size = 0;
 		for (size_t i = 0; i < length; i++) {
-			this->container.push_back(_str[i]);
-			this->_size++;
+			container.push_back(_str[i]);
+			_size++;
 		}
 		return *this;
 	}
@@ -241,8 +244,8 @@ namespace MySTL
 	template<typename T>
 	basic_string<T>& basic_string<T>::operator=(char c)
 	{
-		this->clear();
-		this->push_back(c);
+		clear();
+		push_back(c);
 		return *this;
 	}
 
@@ -279,7 +282,7 @@ namespace MySTL
 	basic_string<T>& basic_string<T>::operator+=(const basic_string<T>& _Right)
 	{
 		for (auto& i : _Right) {
-			this->push_back(i);
+			push_back(i);
 		}
 		return *this;
 	}
@@ -289,7 +292,7 @@ namespace MySTL
 	{
 		size_t length{ strlen(_str) };
 		for (size_t i = 0; i < length; i++) {
-			this->push_back(_str[i]);
+			push_back(_str[i]);
 		}
 		return *this;
 	}
@@ -297,27 +300,27 @@ namespace MySTL
 	template<typename T>
 	basic_string<T>& basic_string<T>::operator+=(char c)
 	{
-		this->push_back(c);
+		push_back(c);
 		return *this;
 	}
 
 	template<typename T>
 	T& basic_string<T>::operator[](size_t _index)
 	{
-		return this->container[_index];
+		return container[_index];
 	}
 
 	template<typename T>
 	const T& basic_string<T>::operator[](size_t _index) const
 	{
-		return this->container[_index];
+		return container[_index];
 	}
 
 	template<typename T>
 	T& basic_string<T>::at(size_t _index)
 	{
-		if (_index <= this->_size) {
-			return this->container[_index];
+		if (_index <= _size) {
+			return container[_index];
 		}
 		else {
 			throw std::out_of_range("Index Out of Range");
@@ -327,12 +330,12 @@ namespace MySTL
 	template<typename T>
 	bool basic_string<T>::operator==(const basic_string<T>& _Right)
 	{
-		if (this->_size != _Right._size) {
+		if (_size != _Right._size) {
 			return false;
 		}
 		else {
-			for (size_t i = 0; i < this->_size; i++) {
-				if (this->container[i] != _Right[i]) return false;
+			for (size_t i = 0; i < _size; i++) {
+				if (container[i] != _Right[i]) return false;
 			}
 			return true;
 		}
@@ -347,14 +350,14 @@ namespace MySTL
 	template<typename T>
 	bool basic_string<T>::operator>(const basic_string<T>& _Right)
 	{
-		size_t min_size{ this->_size < _Right.size() ? this->_size : _Right.size() };
+		size_t min_size{ _size < _Right.size() ? _size : _Right.size() };
 		for (size_t i = 0; i < min_size; i++) {
-			if (this->container[i] > _Right[i]) return true;
-			else if (this->container[i] < _Right[i]) {
+			if (container[i] > _Right[i]) return true;
+			else if (container[i] < _Right[i]) {
 				return false;
 			}
 		}
-		return this->_size > _Right.size();
+		return _size > _Right.size();
 	}
 
 	template<typename T>
@@ -378,10 +381,10 @@ namespace MySTL
 	template<typename T>
 	bool basic_string<T>::operator==(const char* _c_Right)
 	{
-		if (strlen(_c_Right) != this->_size) return false;
+		if (strlen(_c_Right) != _size) return false;
 		else {
-			for (size_t i = 0; i < this->_size; i++) {
-				if (this->container[i] != _c_Right[i])
+			for (size_t i = 0; i < _size; i++) {
+				if (container[i] != _c_Right[i])
 					return false;
 			}
 			return true;
@@ -398,14 +401,14 @@ namespace MySTL
 	bool basic_string<T>::operator>(const char* _c_Right)
 	{
 		size_t length{ strlen(_c_Right) };
-		size_t min_size{ this->_size < length ? this->_size : length };
+		size_t min_size{ _size < length ? _size : length };
 		for (size_t i = 0; i < min_size; i++) {
-			if (this->container[i] > _c_Right[i]) return true;
-			else if (this->container[i] < _c_Right[i]) {
+			if (container[i] > _c_Right[i]) return true;
+			else if (container[i] < _c_Right[i]) {
 				return false;
 			}
 		}
-		return this->_size > length;
+		return _size > length;
 	}
 
 	template<typename T>
@@ -429,99 +432,99 @@ namespace MySTL
 	template<typename T>
 	size_t basic_string<T>::size() const noexcept
 	{
-		return this->_size;
+		return _size;
 	}
 
 	template<typename T>
 	size_t basic_string<T>::capacity() const noexcept
 	{
-		return this->container.capacity();
+		return container.capacity();
 	}
 
 	template<typename T>
 	bool basic_string<T>::empty() const noexcept
 	{
-		if (this->_size != 0) return false;
+		if (_size != 0) return false;
 		else return true;
 	}
 
 	template<typename T>
 	const T* basic_string<T>::data()
 	{
-		return this->container.data();
+		return container.data();
 	}
 
 	template<typename T>
 	const T* basic_string<T>::c_str()
 	{
-		return this->container.data();
+		return container.data();
 	}
 
 	template<typename T>
 	basic_string<T>::iterator basic_string<T>::begin()
 	{
-		return this->container.begin();
+		return container.begin();
 	}
 
 	template<typename T>
 	basic_string<T>::iterator basic_string<T>::end()
 	{
-		return this->container.begin() + this->_size;
+		return container.begin() + _size;
 	}
 
 	template<typename T>
 	basic_string<T>::const_iterator basic_string<T>::begin() const
 	{
-		return this->container.begin();
+		return container.begin();
 	}
 
 	template<typename T>
 	basic_string<T>::const_iterator basic_string<T>::end() const
 	{
-		return this->container.begin() + this->_size;
+		return container.begin() + _size;
 	}
 
 	template<typename T>
 	void basic_string<T>::reserve(size_t new_capacity_size)
 	{
-		this->container.reserve(new_capacity_size);
+		container.reserve(new_capacity_size);
 	}
 
 	template<typename T>
 	void basic_string<T>::resize(size_t new_elem_size)
 	{
-		this->container.resize(new_elem_size);
-		this->_size = new_elem_size;
+		container.resize(new_elem_size);
+		_size = new_elem_size;
 	}
 
 	template<typename T>
 	void basic_string<T>::clear()
 	{
-		this->_size = 0;
-		this->container.clear();
+		_size = 0;
+		container.clear();
 	}
 
 	template<typename T>
 	void basic_string<T>::erase(const size_t _Where)
 	{
-		if (_Where <= this->_size) {
-			this->_size = _Where;
-			this->container.erase(this->container.begin() + _Where, this->container.end());
-			this->container.push_back('\0');
+		if (_Where <= _size) {
+			_size = _Where;
+			container.erase(container.begin() + _Where, container.end());
+			container.push_back('\0');
 		}
 	}
 
 	template<typename T>
 	void basic_string<T>::erase(const size_t _Off, const size_t _Count)
 	{
-		if (_Off <= this->_size) {
-			if (this->_size - _Off > _Count) {
-				this->_size -= _Count;
-				this->container.erase(this->container.begin() + _Off, this->container.begin() + _Off + _Count);
-				this->container[this->_size] = '\0';
+		if (_Off <= _size) {
+			if (_size - _Off > _Count) {
+				_size -= _Count;
+				container.erase(container.begin() + _Off, container.begin() + _Off + _Count);
+				container[_size] = '\0';
 			}
 			else {
-				this->erase(_Off);
+				erase(_Off);
 			}
 		}
 	}
@@ -530,17 +533,17 @@ namespace MySTL
 	void basic_string<T>::erase(basic_string<T>::iterator _begin, basic_string<T>::iterator _end)
 	{
 		if (_end >= _begin) {
-			if (_begin >= this->begin()) {
-				size_t _Off = _begin - this->begin();
+			if (_begin >= begin()) {
+				size_t _Off = _begin - begin();
 				size_t _Count = _end - _begin;
-				if (_Off <= this->_size) {
-					if (this->_size - _Off > _Count) {
-						this->_size -= _Count;
-						this->container.erase(this->container.begin() + _Off, this->container.begin() + _Off + _Count);
-						this->container[this->_size] = '\0';
+				if (_Off <= _size) {
+					if (_size - _Off > _Count) {
+						_size -= _Count;
+						container.erase(container.begin() + _Off, container.begin() + _Off + _Count);
+						container[_size] = '\0';
 					}
 					else {
-						this->erase(_Off);
+						erase(_Off);
 					}
 				}
 			}
@@ -556,12 +559,13 @@ namespace MySTL
 	template<typename T>
 	void basic_string<T>::erase(basic_string<T>::iterator _pos)
 	{
-		if (_pos >= this->begin()) {
-			if (_pos < this->end()) {
-				size_t _Where = _pos - this->begin();
-				if (_Where <= this->_size) {
-					this->_size--;
-					this->container.erase(_pos, _pos + 1);
+		if (_pos >= begin()) {
+			if (_pos < end()) {
+				size_t _Where = _pos - begin();
+				if (_Where <= _size) {
+					_size--;
+					container.erase(_pos, _pos + 1);
+					container[_size] = '\0';
 				}
 			}
 		}
@@ -574,7 +578,7 @@ namespace MySTL
 	void basic_string<T>::append(size_t _Count, char c)
 	{
 		for (size_t i = 0; i < _Count; i++) {
-			this->push_back(c);
+			push_back(c);
 		}
 	}
 
@@ -593,7 +597,7 @@ namespace MySTL
 			}
 			else {
 				for (auto it = _str.begin() + _Begin; it != _str.end(); it++) {
-					this->push_back(*it);
+					push_back(*it);
 				}
 			}
 		}
@@ -610,7 +614,7 @@ namespace MySTL
 				_Count = _str.size() - _Begin;
 			}
 			for (size_t i = 0; i < _Count; i++) {
-				this->push_back(_str[_Begin + i]);
+				push_back(_str[_Begin + i]);
 			}
 		}
 		else {
@@ -644,7 +648,7 @@ namespace MySTL
 			}
 			if (_Count != 0) {
 				for (size_t i = 0; i < _Count; i++) {
-					this->push_back(_str[_Begin + i]);
+					push_back(_str[_Begin + i]);
 				}
 			}
 		}
@@ -657,32 +661,32 @@ namespace MySTL
 	void basic_string<T>::append(std::initializer_list<char> l)
 	{
 		for (auto& i : l) {
-			this->push_back(i);
+			push_back(i);
 		}
 	}
 
 	template<typename T>
 	void basic_string<T>::push_back(char c)
 	{
-		if (this->_size == this->container.size()) {
-			this->container.push_back(c);
+		if (_size == container.size()) {
+			container.push_back(c);
 		}
 		else {
-			this->container[_size] = c;
+			container[_size] = c;
 		}
-		this->container.push_back('\0');
-		this->_size++;
+		container.push_back('\0');
+		_size++;
 	}
 
 	template<typename T>
 	size_t basic_string<T>::find(char c, size_t _begin_pos)
 	{
-		for (size_t i = _begin_pos; i < this->_size; i++) {
-			if (this->container[i] == c) {
+		for (size_t i = _begin_pos; i < _size; i++) {
+			if (container[i] == c) {
 				return i;
 			}
 		}
-		return -1;
+		return npos;
 	}
 
 	template<typename T>
@@ -690,14 +694,14 @@ namespace MySTL
 	{
 		size_t length{ strlen(_str) };
 		bool isFind{ true };
-		if (this->_size < length) return -1;
+		if (_size < length) return npos;
 		else {
-			for (size_t i = _begin_pos; i < this->_size; i++) {
-				if (this->_size - i >= length) {
-					if (this->container[i] == _str[0]) {
+			for (size_t i = _begin_pos; i < _size; i++) {
+				if (_size - i >= length) {
+					if (container[i] == _str[0]) {
 						isFind = true;
 						for (size_t j = 1; j < length; j++) {
-							if (this->container[i + j] != _str[j]) {
+							if (container[i + j] != _str[j]) {
 								i = i + j - 1;
 								isFind = false;
 								break;
@@ -707,10 +711,10 @@ namespace MySTL
 					}
 				}
 				else {
-					return -1;
+					return npos;
 				}
 			}
-			return -1;
+			return npos;
 		}
 	}
 
@@ -719,14 +723,14 @@ namespace MySTL
 	{
 		size_t length{ _str.size() };
 		bool isFind{ true };
-		if (this->_size < length) return -1;
+		if (_size < length) return npos;
 		else {
-			for (size_t i = _begin_pos; i < this->_size; i++) {
-				if (this->_size - i >= length) {
-					if (this->container[i] == _str[0]) {
+			for (size_t i = _begin_pos; i < _size; i++) {
+				if (_size - i >= length) {
+					if (container[i] == _str[0]) {
 						isFind = true;
 						for (size_t j = 1; j < length; j++) {
-							if (this->container[i + j] != _str[j]) {
+							if (container[i + j] != _str[j]) {
 								i = i + j - 1;
 								isFind = false;
 								break;
@@ -736,10 +740,10 @@ namespace MySTL
 					}
 				}
 				else {
-					return -1;
+					return npos;
 				}
 			}
-			return -1;
+			return npos;
 		}
 	}
 
@@ -751,9 +755,9 @@ namespace MySTL
 		for (auto& c : *this) {
 			_Right.push_back(c);
 		}
-		this->clear();
+		clear();
 		for (auto& c : temp) {
-			this->push_back(c);
+			push_back(c);
 		}
 	}
 
@@ -797,7 +801,7 @@ namespace MySTL
 	std::istream& getline(std::istream& input, basic_string<T>& _Target, const char _End = '\n')
 	{
 		_Target.clear();
-		unsigned char c = input.get();
+		T c = input.get();
 		while (c != '\n') {
 			_Target.push_back(c);
 			c = input.get();
