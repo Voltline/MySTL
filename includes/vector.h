@@ -58,10 +58,14 @@ namespace MySTL {
         const T& operator[](size_t index) const;
         constexpr void operator=(const vector<T>& vec);
         constexpr void operator=(vector<T>&& vec) noexcept;
-        bool operator==(const vector<T>& vec);
-        bool operator!=(const vector<T>& vec);
+        bool operator==(const vector<T>& vec) const;
+        bool operator!=(const vector<T>& vec) const;
+        bool operator>(const vector<T>& vec) const;
+        bool operator<(const vector<T>& vec) const;
+        bool operator>=(const vector<T>& vec) const;
+        bool operator<=(const vector<T>& vec) const;
 
-        constexpr void view();
+        constexpr void view() const;
     };
 
     template<typename T>
@@ -85,28 +89,6 @@ namespace MySTL {
                 throw e;
             }
         }
-    }
-
-    template<typename T>
-    bool operator==(const vector<T>& _Left, const vector<T>& _Right) 
-    {
-        if (_Left.elements_num != _Right.elements_num) {
-            return false;
-        }
-        else {
-            for (size_t i = 0; i < _Left.elements_num; i++) {
-                if (_Left[i] != _Right[i]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    template<typename T>
-    bool operator!=(const vector<T>& _Left, const vector<T>& _Right)
-    {
-        return !(_Left == _Right);
     }
 
     template<typename T>
@@ -153,19 +135,69 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline bool vector<T>::operator==(const vector<T>& vec)
+    inline bool vector<T>::operator==(const vector<T>& vec) const
     {
-        return (*this == vec);
+        if (elements_num == vec.elements_num) {
+            for (size_t i = 0; i < elements_num; i++) {
+                if (_data[i] != vec[i]) return false;
+            }
+            return true;
+        }
+        else return false;
     }
 
     template<typename T>
-    inline bool vector<T>::operator!=(const vector<T>& vec)
+    inline bool vector<T>::operator!=(const vector<T>& vec) const
     {
         return !(*this == vec);
     }
 
     template<typename T>
-    inline constexpr void vector<T>::view()
+    inline bool vector<T>::operator>(const vector<T>& vec) const
+    {
+        if (elements_num != vec.elements_num) {
+            return elements_num > vec.elements_num;
+        }
+        else {
+            for (size_t i = 0; i < vec.elements_num; i++) {
+                if (_data[i] != vec[i]) {
+                    return _data[i] > vec[i];
+                }
+            }
+            return false;
+        }
+    }
+
+    template<typename T>
+    inline bool vector<T>::operator<(const vector<T>& vec) const
+    {
+        if (elements_num != vec.elements_num) {
+            return elements_num < vec.elements_num;
+        }
+        else {
+            for (size_t i = 0; i < vec.elements_num; i++) {
+                if (_data[i] != vec[i]) {
+                    return _data[i] < vec[i];
+                }
+            }
+            return false;
+        }
+    }
+
+    template<typename T>
+    inline bool vector<T>::operator>=(const vector<T>& vec) const
+    {
+        return !(*this < vec);
+    }
+
+    template<typename T>
+    inline bool vector<T>::operator<=(const vector<T>& vec) const
+    {
+        return !(*this > vec);
+    }
+
+    template<typename T>
+    inline constexpr void vector<T>::view() const
     {
         for (int i = 0; i < elements_num; i++) {
             std::cout << _data[i] << " ";

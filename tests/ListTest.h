@@ -6,6 +6,7 @@ namespace ListTest
 {
 	void ListTest()
 	{
+        std::cout << "*-----Here are MySTL::List Test-----*" << std::endl;
         MySTL::list<int> l{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
         l.view();
         for (auto& i : l) {
@@ -27,5 +28,6 @@ namespace ListTest
         z.view();
         z.pop_back();
         z.view();
+        std::cout << "*-----End of MySTL::List Test-----*" << std::endl;
 	}
 }

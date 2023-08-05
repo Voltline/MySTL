@@ -3,3 +3,4 @@
 #include "ListTest.h"
 #include "StringTest.h"
 #include "VectorTest.h"
+#include "StackTest.h"

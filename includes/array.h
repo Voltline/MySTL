@@ -22,7 +22,7 @@ namespace MySTL
 		~array() = default;
 
 		constexpr void fill(const T& _value); // 填满_value
-		constexpr void swap(array<T, _Size> _array); // 仅交换值(线性时间复杂度)
+		constexpr void swap(array<T, _Size>& _array); // 仅交换值(线性时间复杂度)
 
 		T& front() noexcept;
 		T& back() noexcept;
@@ -88,7 +88,7 @@ namespace MySTL
 	}
 
 	template<typename T, size_t _Size>
-	inline constexpr void array<T, _Size>::swap(array<T, _Size> _array)
+	inline constexpr void array<T, _Size>::swap(array<T, _Size>& _array)
 	{
 		for (size_t i = 0; i < _Size; i++) {
 			T temp{ _array[i] };
@@ -227,7 +227,7 @@ namespace MySTL
 		array(std::initializer_list<T> l) {}
 
 		constexpr void fill(const T& _value) {}
-		constexpr void swap(array<T, 0> _array) {}
+		constexpr void swap(array<T, 0>& _array) {}
 
 		void front() { throw OutOfRangeException{}; }
 		void back() { throw OutOfRangeException{}; }
