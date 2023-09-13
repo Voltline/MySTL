@@ -26,18 +26,18 @@ namespace MySTL
 		basic_string(std::initializer_list<T> l);
 		~basic_string();
 
-		basic_string& operator=(const basic_string<T>& _Right);
-		basic_string& operator=(basic_string<T>&& _Right) noexcept;
-		basic_string& operator=(const char* _str);
-		basic_string& operator=(char c);
+		basic_string<T>& operator=(const basic_string<T>& _Right);
+		basic_string<T>& operator=(basic_string<T>&& _Right) noexcept;
+		basic_string<T>& operator=(const char* _str);
+		basic_string<T>& operator=(char c);
 
-		basic_string operator+(const basic_string<T>& _Right);
-		basic_string operator+(const char* _str);
-		basic_string operator+(char c);
+		basic_string<T> operator+(const basic_string<T>& _Right);
+		basic_string<T> operator+(const char* _str);
+		basic_string<T> operator+(char c);
 
-		basic_string& operator+=(const basic_string<T>& _Right);
-		basic_string& operator+=(const char* _str);
-		basic_string& operator+=(char c);
+		basic_string<T>& operator+=(const basic_string<T>& _Right);
+		basic_string<T>& operator+=(const char* _str);
+		basic_string<T>& operator+=(char c);
 
 		T& operator[](size_t _index);
 		const T& operator[](size_t _index) const;

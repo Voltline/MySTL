@@ -53,9 +53,9 @@ namespace MySTL
 		bool operator==(Iterator<T> _Right);
 		bool operator!=(Iterator<T> _Right);
 
-		void operator=(const Iterator<T>& _Right);
-		void operator+=(size_t _Off);
-		void operator-=(size_t _Off);
+		Iterator<T>& operator=(const Iterator<T>& _Right);
+		Iterator<T>& operator+=(size_t _Off);
+		Iterator<T>& operator-=(size_t _Off);
 	};
 
 	template<typename T>
@@ -157,13 +157,14 @@ namespace MySTL
 	}
 
 	template<typename T>
-	inline void Iterator<T>::operator=(const Iterator<T>& _Right)
+	inline Iterator<T>& Iterator<T>::operator=(const Iterator<T>& _Right)
 	{
 		node_ptr = _Right.node_ptr;
+		return *this;
 	}
 
 	template<typename T>
-	inline void Iterator<T>::operator+=(size_t _Off)
+	inline Iterator<T>& Iterator<T>::operator+=(size_t _Off)
 	{
 		for (size_t i = 0; i < _Off; i++) {
 			if (node_ptr->next != nullptr) {
@@ -174,10 +175,11 @@ namespace MySTL
 				break;
 			}
 		}
+		return *this;
 	}
 
 	template<typename T>
-	inline void Iterator<T>::operator-=(size_t _Off)
+	inline Iterator<T>& Iterator<T>::operator-=(size_t _Off)
 	{
 		for (size_t i = 0; i < _Off; i++) {
 			if (node_ptr->last != nullptr) {
@@ -188,6 +190,7 @@ namespace MySTL
 				break;
 			}
 		}
+		return *this;
 	}
 
 	template<typename T>

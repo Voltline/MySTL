@@ -56,8 +56,8 @@ namespace MySTL {
 
         T& operator[](size_t index);
         const T& operator[](size_t index) const;
-        constexpr void operator=(const vector<T>& vec);
-        constexpr void operator=(vector<T>&& vec) noexcept;
+        vector<T>& operator=(const vector<T>& vec);
+        vector<T>& operator=(vector<T>&& vec) noexcept;
         bool operator==(const vector<T>& vec) const;
         bool operator!=(const vector<T>& vec) const;
         bool operator>(const vector<T>& vec) const;
@@ -114,7 +114,7 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline constexpr void vector<T>::operator=(const vector<T>& vec)
+    inline vector<T>& vector<T>::operator=(const vector<T>& vec)
     {
         elements_num = vec.elements_num;
         capacity_num = vec.capacity_num;
@@ -123,15 +123,17 @@ namespace MySTL {
         for (size_t i = 0; i < elements_num; i++) {
             _data[i] = vec._data[i];
         }
+        return *this;
     }
 
     template<typename T>
-    inline constexpr void vector<T>::operator=(vector<T>&& vec) noexcept
+    inline vector<T>& vector<T>::operator=(vector<T>&& vec) noexcept
     {
         _data = vec._data;
         elements_num = vec.elements_num;
         capacity_num = vec.capacity_num;
         vec._data = nullptr;
+        return *this;
     }
 
     template<typename T>

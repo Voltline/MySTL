@@ -40,7 +40,7 @@ namespace MySTL
 		const T& operator[](size_t _index) const;
 		T& at(size_t _index);
 
-		void operator=(std::initializer_list<T> l);
+		array<T, _Size>& operator=(std::initializer_list<T> l);
 		constexpr bool operator==(array<T, _Size> _array);
 		constexpr bool operator!=(array<T, _Size> _array);
 
@@ -163,13 +163,14 @@ namespace MySTL
 	}
 
 	template<typename T, size_t _Size>
-	inline void array<T, _Size>::operator=(std::initializer_list<T> l)
+	inline array<T, _Size>& array<T, _Size>::operator=(std::initializer_list<T> l)
 	{
 		if (l.size() <= _Size) {
 			size_t i = 0;
 			for (auto it = l.begin(); it != l.end(); it++) {
 				_data[i++] = *it;
 			}
+			return *this;
 		}
 		else {
 			throw std::runtime_error{ "Invalid initializer list size" };
@@ -245,7 +246,7 @@ namespace MySTL
 		T& operator[](size_t _index) { throw OutOfRangeException{}; }
 		T& at(size_t _index) { throw OutOfRangeException{}; }
 
-		void operator=(std::initializer_list<T> l) {}
+		array<T, 0> operator=(std::initializer_list<T> l) { return *this; }
 		constexpr bool operator==(array<T, 0> _array) { return true; }
 		constexpr bool operator!=(array<T, 0> _array) { return false; }
 
