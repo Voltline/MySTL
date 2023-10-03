@@ -393,25 +393,25 @@ namespace MySTL {
     }
 
     template<typename T>
-    inline vector<T>::iterator vector<T>::begin()
+    inline typename vector<T>::iterator vector<T>::begin()
     {
         return _data;
     }
 
     template<typename T>
-    inline vector<T>::iterator vector<T>::end()
+    inline typename vector<T>::iterator vector<T>::end()
     {
         return _data + elements_num;
     }
 
     template<typename T>
-    inline vector<T>::const_iterator vector<T>::begin() const
+    inline typename vector<T>::const_iterator vector<T>::begin() const
     {
         return _data;
     }
 
     template<typename T>
-    inline vector<T>::const_iterator vector<T>::end() const
+    inline typename vector<T>::const_iterator vector<T>::end() const
     {
         return _data + elements_num;
     }

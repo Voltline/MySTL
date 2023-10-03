@@ -110,25 +110,25 @@ namespace MySTL
 	}
 
 	template<typename T, size_t _Size>
-	inline array<T, _Size>::iterator array<T, _Size>::begin()
+	inline typename array<T, _Size>::iterator array<T, _Size>::begin()
 	{
 		return _data;
 	}
 
 	template<typename T, size_t _Size>
-	inline array<T, _Size>::iterator array<T, _Size>::end()
+	inline typename array<T, _Size>::iterator array<T, _Size>::end()
 	{
 		return _data + _size;
 	}
 
 	template<typename T, size_t _Size>
-	inline array<T, _Size>::const_iterator array<T, _Size>::begin() const
+	inline typename array<T, _Size>::const_iterator array<T, _Size>::begin() const
 	{
 		return _data;
 	}
 
 	template<typename T, size_t _Size>
-	inline array<T, _Size>::const_iterator array<T, _Size>::end() const
+	inline typename array<T, _Size>::const_iterator array<T, _Size>::end() const
 	{
 		return _data + _size;
 	}

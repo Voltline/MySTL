@@ -5,11 +5,11 @@ using namespace std;
 
 int main()
 {
-    // StringTest::StringTest();
+    StringTest::StringTest();
     // ArrayTest::ArrayTest();
     // VectorTest::VectorTest();
     // ListTest::ListTest();
-    StackTest::StackTest();
+    // StackTest::StackTest();
     stack<int> s;
     return 0;
 }

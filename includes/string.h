@@ -461,25 +461,25 @@ namespace MySTL
 	}
 
 	template<typename T>
-	basic_string<T>::iterator basic_string<T>::begin()
+	typename basic_string<T>::iterator basic_string<T>::begin()
 	{
 		return container.begin();
 	}
 
 	template<typename T>
-	basic_string<T>::iterator basic_string<T>::end()
+	typename basic_string<T>::iterator basic_string<T>::end()
 	{
 		return container.begin() + _size;
 	}
 
 	template<typename T>
-	basic_string<T>::const_iterator basic_string<T>::begin() const
+	typename basic_string<T>::const_iterator basic_string<T>::begin() const
 	{
 		return container.begin();
 	}
 
 	template<typename T>
-	basic_string<T>::const_iterator basic_string<T>::end() const
+	typename basic_string<T>::const_iterator basic_string<T>::end() const
 	{
 		return container.begin() + _size;
 	}
