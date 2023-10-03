@@ -56,7 +56,7 @@ namespace MySTL
 	}
 
 	template<typename T>
-	stack<T>::stack(vector<T>::const_iterator first, vector<T>::const_iterator last)
+	stack<T>::stack(typename vector<T>::const_iterator first, typename vector<T>::const_iterator last)
 	{
 		if (first <= last) {
 			for (auto& it = first; it != last; it++) {
