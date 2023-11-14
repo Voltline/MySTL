@@ -6,11 +6,10 @@ using namespace std;
 int main()
 {
     StringTest::StringTest();
-    // ArrayTest::ArrayTest();
+    ArrayTest::ArrayTest();
     // VectorTest::VectorTest();
     // ListTest::ListTest();
     // StackTest::StackTest();
-    // test
     stack<int> s;
     return 0;
 }
