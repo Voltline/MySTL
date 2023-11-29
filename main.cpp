@@ -1,6 +1,5 @@
 #include <iostream>
 #include "tests/test_all.h"
-#include <stack>
 using namespace std;
 
 int main()
@@ -10,6 +9,5 @@ int main()
     // VectorTest::VectorTest();
     ListTest::ListTest();
     // StackTest::StackTest();
-    stack<int> s;
     return 0;
 }

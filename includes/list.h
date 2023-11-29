@@ -194,8 +194,6 @@ namespace MySTL
 	class list
 	{
 	private:
-		inline static Node<T>* _end{ new Node<T>{} };
-	private:
 		Node<T>* _head;
 		Node<T>* _tail;
 		size_t _size;
@@ -220,17 +218,17 @@ namespace MySTL
 
 		iterator end()
 		{
-			return Iterator(_end);
+			return Iterator<T>(nullptr);
 		}
 
 		const_iterator begin() const
 		{
-			return Iterator(_head);
+			return Iterator(_head->next);
 		}
 
 		const_iterator end() const
 		{
-			return Iterator(_end);
+			return Iterator<T>(nullptr);
 		}
 
 		void insert(list<T>::const_iterator _Where, const T& val);
@@ -268,7 +266,6 @@ namespace MySTL
 			_size++;
 		}
 		_tail = _tail_node_ptr;
-		_tail->next = _end;
 	}
 
 	template<typename T>
@@ -283,7 +280,6 @@ namespace MySTL
 			_size++;
 		}
 		_tail = _tail_node_ptr;
-		_tail = _end;
 	}
 	
 	template<typename T>
@@ -327,7 +323,6 @@ namespace MySTL
 			temp_node_ptr->last = _tail;
 			_tail = temp_node_ptr;
 		}
-		_tail->next = _end;
 	}
 	
 	template<typename T>
@@ -344,7 +339,6 @@ namespace MySTL
 			_tail = temp_node_ptr;
 			temp_node_ptr->next = nullptr;
 		}
-		_tail->next = _tail;
 	}
 	
 	template<typename T>
@@ -354,7 +348,8 @@ namespace MySTL
 			Node<T>* temp{ _tail->last };
 			temp->next = _tail->next;
 			_size--;
-			delete temp;
+			delete _tail;
+			_tail = temp;
 		}
 	}
 	
@@ -364,7 +359,7 @@ namespace MySTL
 		if (!empty()) {
 			Node<T>* temp{ _head->next };
 			_head->next = temp->next;
-			if (!_head->next) {
+			if (_head->next) {
 				_head->next->last = _head;
 			}
 			_size--;

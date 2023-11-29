@@ -22,11 +22,13 @@ namespace ListTest
         for (auto& i : v) {
             std::cout << &i << std::endl;
         }
+        u.pop_front();
+        u.pop_back();
         u.push_back(3);
         u.view();
         MySTL::list<int> z{ 1 };
         z.view();
-        z.pop_back();
+        z.pop_front();
         z.view();
         std::cout << "*-----End of MySTL::List Test-----*" << std::endl;
 	}
