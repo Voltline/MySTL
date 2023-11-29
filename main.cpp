@@ -5,10 +5,10 @@ using namespace std;
 
 int main()
 {
-    StringTest::StringTest();
-    ArrayTest::ArrayTest();
+    // StringTest::StringTest();
+    // ArrayTest::ArrayTest();
     // VectorTest::VectorTest();
-    // ListTest::ListTest();
+    ListTest::ListTest();
     // StackTest::StackTest();
     stack<int> s;
     return 0;
