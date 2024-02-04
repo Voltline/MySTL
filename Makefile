@@ -1,4 +1,6 @@
 FOLDER_NAME := build
+OBJS = main.o
+TARGET = main
 
 ifeq ($(wildcard $(FOLDER_NAME)),)
 create_folder:
@@ -9,14 +11,14 @@ create_folder:
 	@echo "$(FOLDER_NAME) directory already exists"
 endif
 
-main: main.o
-	g++ build/main.o -o build/main -std=c++20
-	./build/main
+$(TARGET): $(OBJS)
+	g++ $(FOLDER_NAME)/$(OBJS) -o $(FOLDER_NAME)/$(TARGET) -std=c++20
+	./$(FOLDER_NAME)/main
 main.o: create_folder
-	g++ main.cpp -c -o build/main.o -std=c++20
+	g++ main.cpp -c -o $(FOLDER_NAME)/main.o -std=c++20
 
 clean:
 	rm -rf build
 
 .PHONY: default
-default: main
+default: $(TARGET)
