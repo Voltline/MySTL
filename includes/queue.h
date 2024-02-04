@@ -3,10 +3,10 @@
 
 namespace MySTL
 {
-	template<typename T>
-	class queue
-	{
-	private:
-		List _data{};
-	};
+    template<typename T>
+    class queue
+    {
+    private:
+        List _data{};
+    };
 }

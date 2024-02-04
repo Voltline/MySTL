@@ -2,10 +2,10 @@
 
 namespace MySTL 
 {
-	template<typename T>
-	class deque
-	{
-	private:
-		List _data{};
-	};
+    template<typename T>
+    class deque
+    {
+    private:
+        List _data{};
+    };
 }
