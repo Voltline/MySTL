@@ -13,7 +13,7 @@ namespace ListTest
             std::cout << &i << std::endl;
         }
         MySTL::list<int> u(l);
-        u.view(); // µ÷ÓÃ¿½±´¸Ã¹¹Ôìº¯Êı
+        u.view(); // è°ƒç”¨æ‹·è´è¯¥æ„é€ å‡½æ•°
         for (auto& i : u) {
             std::cout << &i << std::endl;
         }

@@ -21,8 +21,8 @@ namespace MySTL
 		array(std::initializer_list<T> l);
 		~array() = default;
 
-		constexpr void fill(const T& _value); // ÌîÂú_value
-		constexpr void swap(array<T, _Size>& _array); // ½ö½»»»Öµ(ÏßĞÔÊ±¼ä¸´ÔÓ¶È)
+		constexpr void fill(const T& _value); // å¡«æ»¡_value
+		constexpr void swap(array<T, _Size>& _array); // ä»…äº¤æ¢å€¼(çº¿æ€§æ—¶é—´å¤æ‚åº¦)
 
 		T& front() noexcept;
 		T& back() noexcept;

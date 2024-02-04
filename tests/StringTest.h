@@ -7,7 +7,7 @@ namespace StringTest
 	void StringTest()
 	{
 		std::cout << "*-----Here are MySTL::String Test-----*" << std::endl;
-        MySTL::string s1{ "HEllo!" }, s3{ "World!" }, s0{ "ÄãºÃ£¬ÊÀ½ç£¡" };
+        MySTL::string s1{ "HEllo!" }, s3{ "World!" }, s0{ "ä½ å¥½ï¼Œä¸–ç•Œï¼" };
         std::cout << "s0 : " << s0 << std::endl;
 
         MySTL::string s2{ "HelloABABABBABC123HDJKAS, World!!" };
